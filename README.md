@@ -24,7 +24,7 @@
 ### npm run start （使用.env配置）
 
 ## 服务器启动，NODEJS进程守卫，使用pm2;npm i pm2 -g
-## 启动 或者 直接 pm2 start server.js --name 'cat_api v1'
+## 启动 或者 直接 pm2 start server.js --name 'FACE_LIVE v1'
 
 ### npm run pm2
 

@@ -1,7 +1,7 @@
 const Model = require('../model/index')
 const dataBase = require('../model/database')
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = 'CAT_API'
+const SECRET_KEY = 'FACE_LIVE'
 
 function createToken(data) {
   const token = jwt.sign(

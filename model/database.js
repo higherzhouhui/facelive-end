@@ -4,26 +4,21 @@ const Redis = require('ioredis')
 var log4js = require('log4js')
 var logger = log4js.getLogger('system')
 
-if (process.env.NODE_ENV == 1) {
-  require('dotenv').config({ path: '../.env.dev' })
-} else {
-  require('dotenv').config({ path: '../.env' })
-}
 const config = process.env
-const cache = new Redis({
-  host: config.DB_HOST,
-  port: config.REDIS_PORT,
-  db: config.REDIS_DB_NO
-})
+// const cache = new Redis({
+//   host: config.DB_HOST,
+//   port: config.REDIS_PORT,
+//   db: config.REDIS_DB_NO
+// })
 
-cache.on('connect', () => {
-  logger.info('2.Redis connection has establish successfully')
-})
+// cache.on('connect', () => {
+//   logger.info('2.Redis connection has establish successfully')
+// })
 
-// 连接错误的回调函数
-cache.on('error', (err) => {
-  logger.error('Redis error:', err)
-})
+// // 连接错误的回调函数
+// cache.on('error', (err) => {
+//   logger.error('Redis error:', err)
+// })
 
 // 配置数据库连接
 const sequelize = new Sequelize(
@@ -102,6 +97,6 @@ module.exports = {
   sequelize,
   QueryTypes,
   Op,
-  cache,
+  // cache,
   sequelizeAuto
 }

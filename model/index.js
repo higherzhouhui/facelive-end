@@ -132,6 +132,81 @@ const Event = db.sequelize.define(
 // Event.sync({ alter: true })
 
 
+/** 国家  */
+const Country = db.sequelize.define(
+  'country',
+  {
+    label: { type: DataTypes.STRING },
+    flag: { type: DataTypes.STRING },
+    code: { type: DataTypes.STRING },
+  },
+  {
+    tableName: 'country'
+  }
+)
+
+/** 语言  */
+const Language = db.sequelize.define(
+  'language',
+  {
+    label: { type: DataTypes.STRING },
+    code: { type: DataTypes.STRING },
+  },
+  {
+    tableName: 'language'
+  }
+)
+
+/** 风格  */
+const Style = db.sequelize.define(
+  'style',
+  {
+    label: { type: DataTypes.STRING },
+    code: { type: DataTypes.STRING },
+  },
+  {
+    tableName: 'style'
+  }
+)
+
+/** 风格  */
+const Group = db.sequelize.define(
+  'group',
+  {
+    label: { type: DataTypes.STRING },
+    code: { type: DataTypes.STRING },
+  },
+  {
+    tableName: 'group'
+  }
+)
+
+/** 主播  */
+const Anchor = db.sequelize.define(
+  'anchor',
+  {
+    name: { type: DataTypes.STRING },
+    language: { type: DataTypes.STRING, defaultValue: 'en' },
+    country: { type: DataTypes.STRING, defaultValue: 'en' },
+    coin: { type: DataTypes.INTEGER, defaultValue: 500 },
+    video: { type: DataTypes.STRING },
+    heart: { type: DataTypes.INTEGER, defaultValue: 0 },
+    star: { type: DataTypes.INTEGER, defaultValue: 5 },
+    time: { type: DataTypes.INTEGER, defaultValue: 50000 },
+    fens: { type: DataTypes.INTEGER, defaultValue: 50000 },
+    return: { type: DataTypes.INTEGER, defaultValue: 500 },
+    comments: { type: DataTypes.INTEGER, defaultValue: 300 },
+    age: { type: DataTypes.INTEGER },
+    style: { type: DataTypes.STRING },
+    label: { type: DataTypes.STRING },
+    cover: { type: DataTypes.STRING },
+    status: { type: DataTypes.STRING,  defaultValue: 'onLine'},
+  },
+  {
+    tableName: 'anchor'
+  }
+)
+
 /** Manager */
 const Manager = db.sequelize.define(
   'manager',
@@ -184,5 +259,10 @@ module.exports = {
   CheckInReward,
   TaskList,
   UserTask,
-  LevelList
+  LevelList,
+  Anchor,
+  Country,
+  Language,
+  Style,
+  Group
 }

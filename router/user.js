@@ -24,13 +24,13 @@ async function login(req, resp) {
       if (!data.username) {
         data.username = data.firstName + data.lastName
       }
-      if (!(data.hash && data.id && data.username && data.authDate && data.wallet)) {
+      if (!(data.hash && data.id && data.username && data.authDate)) {
         user_logger().error('Login failed', 'Data format exception')
         return errorResp(resp,  400, `validate error`)
       }
       let user = await Model.User.findOne({
         where: {
-          wallet: data.wallet
+          user_id: data.id
         }
       })
       // 找到当前用户，如果存在则返回其数据，如果不存在则新创建
