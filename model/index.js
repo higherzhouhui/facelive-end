@@ -21,21 +21,18 @@ const User = db.sequelize.define(
     photoUrl: { type: DataTypes.STRING },
     invite_friends_score: { type: DataTypes.BIGINT, defaultValue: 0 },
     invite_friends_game_score: { type: DataTypes.BIGINT, defaultValue: 0 },
-    game_score: { type: DataTypes.DOUBLE, defaultValue: 0 },
     check_score: { type: DataTypes.BIGINT, defaultValue: 0 },
     task_score: { type: DataTypes.BIGINT, defaultValue: 0 },
     bind_wallet_score: { type: DataTypes.BIGINT, defaultValue: 0 },
     check_date: { type: DataTypes.STRING, defaultValue: '' },
     ticket: { type: DataTypes.BIGINT, defaultValue: 10 },
     wallet: { type: DataTypes.STRING },
-    wallet_nickName: { type: DataTypes.STRING },
-    is_really: { type: DataTypes.BOOLEAN, defaultValue: true },
     is_Tg: { type: DataTypes.BOOLEAN, defaultValue: true },
     is_New: { type: DataTypes.BOOLEAN, defaultValue: true },
     last_play_time: { type: DataTypes.DATE },
     level: { type: DataTypes.INTEGER, defaultValue: 1},
-    free_gas: { type: DataTypes.INTEGER, defaultValue: 3},
-    is_auto_driver: { type: DataTypes.BOOLEAN, defaultValue: false },
+    follow_anchor: { type: DataTypes.STRING },
+    chat_anchor: { type: DataTypes.STRING },
   },
   {
     tableName: 'user',
@@ -96,7 +93,7 @@ const Config = db.sequelize.define(
     invite_friends_score: { type: DataTypes.INTEGER, defaultValue: 5000 },
     recovery_time: { type: DataTypes.INTEGER, defaultValue: 90 },
     bind_wallet_score: { type: DataTypes.INTEGER, defaultValue: 3000 },
-    tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/goracing_bot/race' },
+    tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot' },
   },
   {
     tableName: 'config'
@@ -139,6 +136,8 @@ const Country = db.sequelize.define(
     label: { type: DataTypes.STRING },
     flag: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    sort: { type: DataTypes.INTEGER },
+    selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
   {
     tableName: 'country'
@@ -151,6 +150,8 @@ const Language = db.sequelize.define(
   {
     label: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    sort: { type: DataTypes.INTEGER },
+    selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
   {
     tableName: 'language'
@@ -163,18 +164,22 @@ const Style = db.sequelize.define(
   {
     label: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    sort: { type: DataTypes.INTEGER },
+    selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
   {
     tableName: 'style'
   }
 )
 
-/** 风格  */
+/** 群组  */
 const Group = db.sequelize.define(
   'group',
   {
     label: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    sort: { type: DataTypes.INTEGER },
+    selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
   {
     tableName: 'group'
@@ -186,21 +191,25 @@ const Anchor = db.sequelize.define(
   'anchor',
   {
     name: { type: DataTypes.STRING },
-    language: { type: DataTypes.STRING, defaultValue: 'en' },
-    country: { type: DataTypes.STRING, defaultValue: 'en' },
+   
     coin: { type: DataTypes.INTEGER, defaultValue: 500 },
     video: { type: DataTypes.STRING },
-    heart: { type: DataTypes.INTEGER, defaultValue: 0 },
+    heart: { type: DataTypes.INTEGER, defaultValue: 5000 },
+    sort: { type: DataTypes.INTEGER, defaultValue: 0 },
     star: { type: DataTypes.INTEGER, defaultValue: 5 },
     time: { type: DataTypes.INTEGER, defaultValue: 50000 },
     fens: { type: DataTypes.INTEGER, defaultValue: 50000 },
     return: { type: DataTypes.INTEGER, defaultValue: 500 },
     comments: { type: DataTypes.INTEGER, defaultValue: 300 },
     age: { type: DataTypes.INTEGER },
+    country: { type: DataTypes.STRING, defaultValue: 'us' },
+    language: { type: DataTypes.STRING, defaultValue: 'en' },
     style: { type: DataTypes.STRING },
-    label: { type: DataTypes.STRING },
+    group: { type: DataTypes.STRING },
     cover: { type: DataTypes.STRING },
     status: { type: DataTypes.STRING,  defaultValue: 'onLine'},
+    isCommend:  { type: DataTypes.BOOLEAN, defaultValue: false },
+    channel:  { type: DataTypes.STRING, defaultValue: '' },
   },
   {
     tableName: 'anchor'

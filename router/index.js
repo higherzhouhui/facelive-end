@@ -6,6 +6,7 @@ const game = require('./game.js')
 const checkInReward = require('./reward.js')
 const task = require('./task.js')
 const level = require('./level.js')
+const anchor = require('./anchor.js')
 
 // 用户路由
 router.post('/user/login', user.login)
@@ -26,6 +27,13 @@ router.get('/user/getMyScoreHistory', user.getMyScoreHistory)
 router.get('/user/subtotallist', user.getSubUserTotalAndList)
 router.get('/user/getcertifieds', user.getCertifieds)
 
+// 主播
+router.get('/anchor/list', anchor.list)
+router.get('/anchor/info', anchor.info)
+router.get('/anchor/next', anchor.next)
+router.get('/anchor/begin', anchor.begin)
+router.post('/anchor/follow', anchor.follow)
+
 
 router.get('/game/begin', game.begin)
 router.get('/game/record', game.record)
@@ -41,6 +49,7 @@ router.get('/task/list', task.list)
 router.post('/task/handle', task.handle)
 
 router.get('/system/getConfig', manage.getConfigInfo)
+router.get('/system/getAllConfig', manage.getAllConfig)
 router.get('/system/resetTicket', user.resetTicketInfo)
 
 // 管理后台接口

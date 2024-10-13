@@ -2,6 +2,7 @@ const Model = require('../model/index')
 const dataBase = require('../model/database')
 const jwt = require('jsonwebtoken')
 const SECRET_KEY = 'FACE_LIVE'
+const log4js = require('log4js')
 
 function createToken(data) {
   const token = jwt.sign(
@@ -156,6 +157,29 @@ function isLastDay(timestamp, diff) {
   return timestamp >= startTimeStamp && timestamp < endTimeStamp;
 }
 
+function logger(type, status) {
+  let filename = `./logs/${type}/${type}`
+  if (status == 'error') {
+    filename = `./logs/error/error`
+  }
+  log4js.configure({
+    appenders: {
+      out: { type: 'console' },
+      app: {
+        type: 'dateFile',
+        filename: filename,
+        pattern: 'yyyy-MM-dd.log',
+        alwaysIncludePattern: true
+      }
+    },
+    categories: {
+      default: { appenders: ['out', 'app'], level: 'debug' }
+    }
+  })
+  const logger = log4js.getLogger('anchor')
+  return logger
+}
+
 async function resetUserTicket(user) {
   let ticket = user.ticket
   try {
@@ -210,4 +234,5 @@ module.exports = {
   isLastDay,
   resetUserTicket,
   createToken,
+  logger,
 }

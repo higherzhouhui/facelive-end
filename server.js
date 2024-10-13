@@ -5,6 +5,7 @@ const app = express()
 const { token_auth, logger } = require('./middleware/index')
 var multipart = require('connect-multiparty')
 var log4js = require('log4js')
+const path = require('path')
 var bodyParser = require('body-parser')
 if (process.env.NODE_ENV == 1) {
   require('dotenv').config({ path: './.env.dev' })
@@ -13,6 +14,10 @@ if (process.env.NODE_ENV == 1) {
 }
 
 require('./utils/swaggerUI')(app);
+
+//配置静态文件目录
+const staticDir = path.join(__dirname, 'public')
+app.use(express.static(staticDir))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -63,7 +68,7 @@ const white_list = [
   '/api/system/resetTicket',
   /^\/api\/nft\/\d+$/,
   '/api/system/getConfig',
-  '/user/getcertifieds',
+  '/api/system/getAllConfig',
 ]
 app.use((req, resp, next) => {
   const path = req.path // 获取请求的路径

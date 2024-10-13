@@ -425,16 +425,44 @@ async function getEventList(req, resp) {
   }
 }
 
-
 /**
  * 
  * 查看系统配置
  */
+async function getAllConfig(req, resp) {
+  manager_logger().info('查看系统配置')
+  try {
+    const base = await Model.Config.findOne()
+    const country = await Model.Country.findAll({
+      order: [['sort', 'asc']]
+    })
+    const language = await Model.Language.findAll({
+      order: [['sort', 'asc']]
+    })
+    const style = await Model.Style.findAll({
+      order: [['sort', 'asc']]
+    })
+    const group = await Model.Group.findAll({
+      order: [['sort', 'asc']]
+    })
+    return successResp(resp, {base: base.dataValues, country: country, language: language, style: style, group: group}, '成功！')
+  } catch (error) {
+    manager_logger().info('查看系统配置失败', error)
+    console.error(`${error}`)
+    return errorResp(resp, `${error}`)
+  }
+}
+
+/**
+ * 
+ * 查看系统基本配置
+ */
 async function getConfigInfo(req, resp) {
   manager_logger().info('查看系统配置')
   try {
-    const info = await Model.Config.findOne()
-    return successResp(resp, info.dataValues, '成功！')
+    const base = await Model.Config.findOne()
+   
+    return successResp(resp, {...base.dataValues}, '成功！')
   } catch (error) {
     manager_logger().info('查看系统配置失败', error)
     console.error(`${error}`)
@@ -1193,5 +1221,6 @@ module.exports = {
   getWalletList,
   getPropsRecordList,
   updateUserPropsList,
-  removeUserProps
+  removeUserProps,
+  getAllConfig,
 }

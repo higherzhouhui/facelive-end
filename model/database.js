@@ -5,20 +5,20 @@ var log4js = require('log4js')
 var logger = log4js.getLogger('system')
 
 const config = process.env
-// const cache = new Redis({
-//   host: config.DB_HOST,
-//   port: config.REDIS_PORT,
-//   db: config.REDIS_DB_NO
-// })
+const cache = new Redis({
+  host: config.DB_HOST,
+  port: config.REDIS_PORT,
+  db: config.REDIS_DB_NO
+})
 
-// cache.on('connect', () => {
-//   logger.info('2.Redis connection has establish successfully')
-// })
+cache.on('connect', () => {
+  logger.info('2.Redis connection has establish successfully')
+})
 
-// // 连接错误的回调函数
-// cache.on('error', (err) => {
-//   logger.error('Redis error:', err)
-// })
+// 连接错误的回调函数
+cache.on('error', (err) => {
+  logger.error('Redis error:', err)
+})
 
 // 配置数据库连接
 const sequelize = new Sequelize(
@@ -63,7 +63,6 @@ const sequelizeAuto = new Sequelize(
 )
 
 
-
 // 测试连接
 async function connectDB() {
   try {
@@ -85,6 +84,8 @@ async function connectDB() {
       await sequelize.sync({ alter: true }); // 将 force 设置为 true 将会删除并重新创建所有表
       logger.log('4.Database synchronization successful!');
       logger.log('5.Server started successful!');
+
+      require('../bot/index.js')
     }
   } catch (error) {
     logger.error('connect db error', error)
@@ -97,6 +98,6 @@ module.exports = {
   sequelize,
   QueryTypes,
   Op,
-  // cache,
+  cache,
   sequelizeAuto
 }
