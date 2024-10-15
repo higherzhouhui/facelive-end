@@ -445,7 +445,11 @@ async function getAllConfig(req, resp) {
     const group = await Model.Group.findAll({
       order: [['sort', 'asc']]
     })
-    return successResp(resp, {base: base.dataValues, country: country, language: language, style: style, group: group}, '成功！')
+    const systemLanguage = await Model.SystemLanguage.findAll({
+      order: [['sort', 'asc']]
+    })
+    
+    return successResp(resp, {base: base.dataValues, country: country, language: language, style: style, group: group, systemLanguage}, '成功！')
   } catch (error) {
     manager_logger().info('查看系统配置失败', error)
     console.error(`${error}`)

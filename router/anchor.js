@@ -134,6 +134,16 @@ async function follow(req, resp) {
         await detail.update({
           heart: heart
         })
+        const event_data = {
+          type: !status ? 'follow' : 'unFollow',
+          from_user: req.id,
+          from_username: userInfo.username,
+          to_user: detail.id,
+          to_username: detail.name,
+          score: 0,
+          desc: `${userInfo.username} is ${!status ? 'follow' : 'unFollow'} ${detail.name}`
+        }
+        await Model.Event.create(event_data)
       }
       return successResp(resp, {status: !status, heart}, 'success')
     })
@@ -169,8 +179,11 @@ async function next(req, resp) {
         const follow_anchor = userInfo.follow_anchor
         if (follow_anchor) {
           const list = follow_anchor.split(',')
-          if (list.includes(`${id}`)) {
+          console.log(list)
+          if (list.includes(`${detail.id}`)) {
             detail.isLike = true
+          } else {
+            detail.isLike = false
           }
         }
       }
@@ -247,6 +260,98 @@ async function begin(req, resp) {
   }
 }
 
+
+/**
+ * get /api/anchor/followList
+ * @summary 查询关注主播列表
+ * @tags anchor
+ * @description 查询关注主播列表
+ * @security - Authorization
+ */
+async function followList(req, resp) {
+  anchor_logger().info('查询关注主播列表', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      let list = []
+      if (userInfo) {
+        const follow_anchor = userInfo.follow_anchor
+        if (follow_anchor) {
+          let follow_list = follow_anchor.split(',')
+          if (follow_list.length) {
+            follow_list = follow_list.filter(item => {
+              return !isNaN(item)
+            })
+            list = await Model.Anchor.findAll({
+              attributes: ['avatar', 'name', 'country', 'id', 'coin'],
+              where: {
+                id: {
+                  [dataBase.Op.in]: follow_list
+                }
+              }
+            })
+          }
+        }
+      }
+      return successResp(resp, list, 'success')
+    })
+  } catch (error) {
+    logger('anchor', 'error').error(`${req.id} 查询关注主播列表失败：${error}`)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+
+/**
+ * get /api/anchor/chatList
+ * @summary 聊天过的主播列表
+ * @tags anchor
+ * @description 聊天过的主播列表
+ * @security - Authorization
+ */
+async function chatList(req, resp) {
+  anchor_logger().info('聊天过的主播列表', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      let list = []
+      if (userInfo) {
+        const t_chat_anchor = userInfo.chat_anchor
+        if (t_chat_anchor) {
+          let chat_anchor = t_chat_anchor.split(',')
+          if (chat_anchor.length) {
+            chat_anchor = chat_anchor.filter(item => {
+              return !isNaN(item)
+            })
+            list = await Model.Anchor.findAll({
+              attributes: ['avatar', 'name', 'country', 'id', 'coin'],
+              where: {
+                id: {
+                  [dataBase.Op.in]: chat_anchor
+                }
+              }
+            })
+          }
+        }
+      }
+      return successResp(resp, list, 'success')
+    })
+  } catch (error) {
+    logger('anchor', 'error').error(`${req.id} 聊天过的主播列表失败：${error}`)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
 //----------------------------- private method --------------
 async function getNextAnchor(id) {
   const anchorId = parseInt(id) + 1
@@ -285,4 +390,6 @@ module.exports = {
   follow,
   next,
   begin,
+  followList,
+  chatList,
 }

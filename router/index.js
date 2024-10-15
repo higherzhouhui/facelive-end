@@ -7,6 +7,7 @@ const checkInReward = require('./reward.js')
 const task = require('./task.js')
 const level = require('./level.js')
 const anchor = require('./anchor.js')
+const product = require('./product.js')
 
 // 用户路由
 router.post('/user/login', user.login)
@@ -33,6 +34,11 @@ router.get('/anchor/info', anchor.info)
 router.get('/anchor/next', anchor.next)
 router.get('/anchor/begin', anchor.begin)
 router.post('/anchor/follow', anchor.follow)
+router.get('/anchor/followList', anchor.followList)
+router.get('/anchor/chatList', anchor.chatList)
+
+// 产品
+router.get('/product/list', product.list)
 
 
 router.get('/game/begin', game.begin)

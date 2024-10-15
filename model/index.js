@@ -85,15 +85,11 @@ const TaskList = db.sequelize.define(
 const Config = db.sequelize.define(
   'config',
   {
-    right_score: { type: DataTypes.INTEGER, defaultValue: 10 },
-    free_gas: { type: DataTypes.INTEGER, defaultValue: 3 },
-    ticket: { type: DataTypes.INTEGER, defaultValue: 10 },
-    auto_driver: { type: DataTypes.INTEGER, defaultValue: 750 },
+    invite_hy: { type: DataTypes.INTEGER, defaultValue: 100 },
+    invite_normal: { type: DataTypes.INTEGER, defaultValue: 20 },    
     invite_friends_ratio: { type: DataTypes.INTEGER, defaultValue: 10 },
-    invite_friends_score: { type: DataTypes.INTEGER, defaultValue: 5000 },
-    recovery_time: { type: DataTypes.INTEGER, defaultValue: 90 },
-    bind_wallet_score: { type: DataTypes.INTEGER, defaultValue: 3000 },
     tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot' },
+    help_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/cloudljj' },
   },
   {
     tableName: 'config'
@@ -144,6 +140,18 @@ const Country = db.sequelize.define(
   }
 )
 
+/** 产品  */
+const Product = db.sequelize.define(
+  'product',
+  {
+    score: { type: DataTypes.INTEGER },
+    price: { type: DataTypes.DOUBLE },
+  },
+  {
+    tableName: 'product'
+  }
+)
+
 /** 语言  */
 const Language = db.sequelize.define(
   'language',
@@ -186,6 +194,20 @@ const Group = db.sequelize.define(
   }
 )
 
+
+/** 系统语言  */
+const SystemLanguage = db.sequelize.define(
+  'systemlanguage',
+  {
+    label: { type: DataTypes.STRING },
+    code: { type: DataTypes.STRING },
+    sort: { type: DataTypes.INTEGER },
+  },
+  {
+    tableName: 'systemlanguage'
+  }
+)
+
 /** 主播  */
 const Anchor = db.sequelize.define(
   'anchor',
@@ -194,6 +216,7 @@ const Anchor = db.sequelize.define(
    
     coin: { type: DataTypes.INTEGER, defaultValue: 500 },
     video: { type: DataTypes.STRING },
+    avatar: { type: DataTypes.STRING },
     heart: { type: DataTypes.INTEGER, defaultValue: 5000 },
     sort: { type: DataTypes.INTEGER, defaultValue: 0 },
     star: { type: DataTypes.INTEGER, defaultValue: 5 },
@@ -273,5 +296,7 @@ module.exports = {
   Country,
   Language,
   Style,
-  Group
+  Group,
+  SystemLanguage,
+  Product,
 }

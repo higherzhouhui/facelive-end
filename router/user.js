@@ -38,15 +38,17 @@ async function login(req, resp) {
         const info = await Model.Config.findOne()
         data.user_id = data.id
         // 初始化积分
-        data.score = info.bind_wallet_score
-        data.ticket = info.ticket
+        if (data.isPremium) {
+          data.score = info.invite_normal
+        } else {
+          data.score = info.invite_hy
+        }
 
         const event_data = {
           type: 'Register',
           from_user: data.id,
           to_user: data.id,
           score: data.score,
-          ticket: data.ticket,
           from_username: data.username,
           to_username: data.username,
           desc: `${data.username}  join us!`
@@ -65,8 +67,12 @@ async function login(req, resp) {
                   user_id: inviteId
                 }
               })
-              let increment_score = info.invite_friends_score
-
+              let increment_score = 0
+              if (data.isPremium) {
+                increment_score = info.invite_normal
+              } else {
+                increment_score = info.invite_hy
+              }
               if (parentUser) {
                 const event_data = {
                   type: 'Inviting',
@@ -619,30 +625,29 @@ async function getSubUserTotalAndList(req, resp) {
  * @security - Authorization
  */
 async function getSubUserList(req, resp) {
-  user_logger().info('获取下级用户列表', req.id)
+  user_logger().info('Get subordinate user list', req.id)
   try {
     const page = req.query.page
-    const list = await Model.User.findAndCountAll({
-      order: [['score', 'desc']],
-      attributes: ['username', 'score', 'createdAt'],
+    const list = await Model.Event.findAndCountAll({
+      order: [['createdAt', 'desc']],
+      attributes: ['from_username', 'score', 'createdAt', 'type', 'from_user'],
       offset: (page - 1) * 20,
       limit: 20 * 1,
       where: {
-        [dataBase.Op.or]: [
-          {
-            user_id: req.id
-          },
-          {
-            startParam: req.id,
-          }
-        ],
+        from_user: {
+          [dataBase.Op.not]: req.id
+        },
+        to_user: req.id,
+        score: {
+          [dataBase.Op.gt]: 0
+        },
       }
     })
-    return successResp(resp, list, 'success')
+    return successResp(resp, { ...list }, 'success')
   } catch (error) {
-    user_logger().error('获取下级用户列表失败', error)
+    user_logger().error('Failed to retrieve subordinate user list', error)
     console.error(`${error}`)
-    return errorResp(resp, `${error}`)
+    return errorResp(resp, 400, `${error}`)
   }
 }
 
