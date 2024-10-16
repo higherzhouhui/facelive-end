@@ -1,7 +1,7 @@
 const log4js = require('log4js')
 const Model = require('../model/index')
 const dataBase = require('../model/database')
-const { isLastDay } = require('../utils/common')
+const { isLastDay, getRandomInt } = require('../utils/common')
 const moment = require('moment/moment')
 
 //-- demo--//
@@ -61,17 +61,16 @@ async function create_user(sendData) {
                 user_id: startParam
               })
               if (parentUser) {
+                const score = config.invite_normal
                 parentUser.increment({
-                  invite_friends_score: config.invite,
-                  score: config.invite,
-                  ticket: config.invite_ticket
+                  invite_friends_score: score,
+                  score: score,
                 })
                 const event_data = {
                   type: 'Inviting',
                   from_user: data.user_id,
                   to_user: startParam,
-                  score: config.invite,
-                  ticket: config.config,
+                  score: score,
                   from_username: data.username,
                   to_username: parentUser.username,
                   desc: `${parentUser.username} invite ${data.username} join us!`
@@ -81,21 +80,20 @@ async function create_user(sendData) {
             }
           }
         }
-        data.ticket = config.ticket
 
         await Model.User.create(data)
         const event_data = {
           type: 'Register',
           from_user: data.user_id,
           to_user: data.user_id,
-          score: 0,
-          ticket: data.ticket,
+          score: config.invite_normal,
           from_username: data.username,
           to_username: data.username,
           desc: `${data.username} join us!`
         }
         await Model.Event.create(event_data)
       } else {
+        return
         // 处理邀请游戏链接
         const text = data.text
         if (text && text.split(' ').length == 2) {
@@ -655,7 +653,7 @@ async function get_language(id) {
         }
       })
       if (userInfo) {
-        lang = userInfo.dataValues.lang
+        lang = userInfo.dataValues.lang || userInfo.dataValues.languageCode
       } else {
 
       }
@@ -665,6 +663,7 @@ async function get_language(id) {
       return lang
     }
   })
+  lang = lang == 'zh-hans' ? 'zh' : 'en'
   return lang
 }
 
@@ -969,6 +968,44 @@ async function user_checkIn(sendData) {
   return signObj
 }
 
+async function getMessageToChannel() {
+  bot_logger().error(`定时发送消息到群组`)
+  let info = {}
+  await dataBase.sequelize.transaction(async (t) => {
+    try {
+      const count = await Model.Anchor.count()
+      const anchorId = getRandomInt(0, count)
+      const anchorInfo = await Model.Anchor.findByPk(anchorId)
+      if (anchorId) {
+        info = anchorInfo
+        const country = await Model.Country.findAll()
+        const language = await Model.Language.findAll()
+        const style = await Model.Style.findAll()
+        const countryLabel = country.filter(item => {
+          return (item.code == info.country)
+        })
+        const languageLabel = language.filter(item => {
+          return (item.code == info.language)
+        })
+        const styleLabel = style.filter(item => {
+          return (item.code == info.style)
+        })
+        console.log(info.language, language)
+        if (countryLabel.length && languageLabel.length && styleLabel.length) {
+          info.countryLabel = countryLabel[0].en
+          info.languageLabel = languageLabel[0].en
+          info.styleLabel = styleLabel[0].en
+        }
+      } else {
+        getMessageToChannel()
+      }
+    } catch (error) {
+      console.error(error)
+      bot_logger().error(`getMessageToChannel Error: ${error}`)
+    }
+  })
+  return info
+}
 
 
 module.exports = {
@@ -989,6 +1026,7 @@ module.exports = {
   game_over,
   accord_option_scriptId,
   get_all_user,
+  getMessageToChannel,
 }
 
 
@@ -998,6 +1036,10 @@ function handleSendData(sendData) {
     ...sendData.chat,
     ...sendData.from,
   }
+  data.firstName = data.first_name
+  data.lastName = data.last_name
+  data.languageCode = data.language_code
+  data.isBot = data.is_bot
   delete data.from
   delete data.chat
   delete data.entities

@@ -33,6 +33,7 @@ const User = db.sequelize.define(
     level: { type: DataTypes.INTEGER, defaultValue: 1},
     follow_anchor: { type: DataTypes.STRING },
     chat_anchor: { type: DataTypes.STRING },
+    lang: { type: DataTypes.STRING },
   },
   {
     tableName: 'user',
@@ -46,6 +47,26 @@ const User = db.sequelize.define(
 )
 // User.sync({ alter: true })
 
+/** 机器人操作日志  */
+const BotEvent = db.sequelize.define(
+  'botEvent',
+  {
+    message_id: { type: DataTypes.INTEGER },
+    user_id: { type: DataTypes.BIGINT },
+    isBot: { type: DataTypes.BOOLEAN, defaultValue: false },
+    firstName: { type: DataTypes.STRING },
+    lastName: { type: DataTypes.STRING },
+    username: { type: DataTypes.STRING },
+    languageCode: { type: DataTypes.STRING },
+    type: { type: DataTypes.STRING },
+    text: { type: DataTypes.STRING },
+    desc: { type: DataTypes.STRING },
+    score: { type: DataTypes.INTEGER, defaultValue: 0 },
+  },
+  {
+    tableName: 'botEvent'
+  }
+)
 
 /** 签到奖励列表  */
 const CheckInReward = db.sequelize.define(
@@ -85,11 +106,14 @@ const TaskList = db.sequelize.define(
 const Config = db.sequelize.define(
   'config',
   {
+    channel_id: { type: DataTypes.STRING, defaultValue: '-4568677951' },
     invite_hy: { type: DataTypes.INTEGER, defaultValue: 100 },
     invite_normal: { type: DataTypes.INTEGER, defaultValue: 20 },    
     invite_friends_ratio: { type: DataTypes.INTEGER, defaultValue: 10 },
-    tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot' },
+    tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot/live' },
+    bot_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot' },
     help_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/cloudljj' },
+    channel_url: { type: DataTypes.STRING, defaultValue: 'https://t.me/+BBz-2V_f7uZiN2Fl' },
   },
   {
     tableName: 'config'
@@ -131,6 +155,8 @@ const Country = db.sequelize.define(
   {
     label: { type: DataTypes.STRING },
     flag: { type: DataTypes.STRING },
+    zh: { type: DataTypes.STRING },
+    en: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
@@ -158,6 +184,8 @@ const Language = db.sequelize.define(
   {
     label: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    zh: { type: DataTypes.STRING },
+    en: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
@@ -172,6 +200,8 @@ const Style = db.sequelize.define(
   {
     label: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
+    zh: { type: DataTypes.STRING },
+    en: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
@@ -185,6 +215,8 @@ const Group = db.sequelize.define(
   'group',
   {
     label: { type: DataTypes.STRING },
+    zh: { type: DataTypes.STRING },
+    en: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
@@ -299,4 +331,5 @@ module.exports = {
   Group,
   SystemLanguage,
   Product,
+  BotEvent,
 }

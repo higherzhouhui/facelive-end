@@ -711,8 +711,7 @@ async function getUserInfo(req, resp) {
         user_id: req.id
       },
     })
-    const user = await resetUserTicket(userInfo)
-    return successResp(resp, user, 'success')
+    return successResp(resp, userInfo, 'success')
   } catch (error) {
     user_logger().error('获取用户详情失败', error)
     console.error(`${error}`)
@@ -991,33 +990,6 @@ async function getRewardFarming(req, resp) {
   }
 }
 
-/**
- * get /api/user/getcertifieds
- * @summary 获取已经认证的人数
- * @tags user
- * @description 获取已经认证的人数
- * @security - Authorization
- */
-
-async function getCertifieds(req, resp) {
-  try {
-    const id = req.id
-    await dataBase.sequelizeAuto.transaction(async (t) => {
-      const count = await Model.User.count({
-        where: {
-          wallet: {
-            [dataBase.Op.ne]: null
-          },
-        }
-      })
-      return successResp(resp, {count}, 'success')
-    })
-  } catch(error) {
-    user_logger().error('获取已经认证的人数失败', error)
-    return errorResp(resp, 400, `${error}`)
-  }
-}
-
 
 //----------------------------- private method --------------
 async function autoCreateUser(query) {
@@ -1116,5 +1088,4 @@ module.exports = {
   getMyScoreHistory,
   h5PcLogin,
   getSubUserTotalAndList,
-  getCertifieds,
 }

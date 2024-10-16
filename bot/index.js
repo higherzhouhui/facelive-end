@@ -30,6 +30,7 @@ module.exports = {
   bot,
   bot_logger,
 }
-
+// 引入相应操作
 require('./callback')
 require('./cmd')
+require('./cronjob')

@@ -2,9 +2,6 @@ const { bot, bot_logger } = require('./index')
 const operation = require('./data');
 const utils = require('./utils');
 
-// 图片的URL
-const imageUrl = 'https://img0.baidu.com/it/u=739050917,3625217136&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
-
 // 设置命令处理函数
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id
@@ -125,12 +122,14 @@ bot.on('message', async (msg) => {
   try {
     const chatId = msg.chat.id;
     const text = msg.text;
+    
     const newUser = msg.new_chat_member
     if (newUser && !newUser.is_bot) {
       // 可判断任务是否完成
-      bot.sendMessage(chatId, `Welcome <b>${newUser.username}</b> Join Channel`, {parse_mode: 'HTML'})
+      bot.sendMessage(chatId, `Welcome <b>${newUser.username || newUser.first_name || newUser.last_name}</b> Join Channel`, {parse_mode: 'HTML'})
     }
   } catch (error) {
     bot_logger().error(`message Error: ${error}`)
   }
 })
+

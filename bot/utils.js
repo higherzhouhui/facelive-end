@@ -1,9 +1,21 @@
 const operation = require('./data')
 const { bot, bot_logger } = require('./index')
+const fs = require('fs')
 
 const share_text = `Unleash your inner CEO!
 Make your way from the shaved hamster to the grandmaster CEO of the tier-1 crypto exchange.
 Buy upgrades, complete quests, invite friends and become the best`
+
+async function codeToEnLabel(type, code) {
+  try {
+    
+   
+    return messages[key]
+  } catch (error) {
+    console.error(error)
+    return key
+  }
+}
 
 async function getMessage(id, key) {
   try {
@@ -24,16 +36,29 @@ function getLocalSource(url) {
 async function startShow(msg) {
   try {
     let chatId;
+    let type = false
     if (msg.chat) {
       chatId = msg.chat.id
+      type = msg.chat.type
     }
     if (msg.message && msg.message.chat) {
       chatId = msg.message.chat.id
+      type = msg.message.chat.type
     }
+    if (type !== 'private') {
+      return
+    }
+
+    // 创建新用户
+    await operation.create_user(msg)
     const config = await operation.get_config()
-    const link = `${config.mini_app_url}?startapp=${btoa(chatId)}`
-    const source = 'https://raw.githubusercontent.com/higherzhouhui/demo-dapp-with-wallet/game/public/assets/bg.png'
-    const text = `\n<b>Welcome to Hamster!</b>\n\n$HMSTR trading has official begun!\n<a href='${config.channel_url}'>Subscribe to our channel for more $HMSTR and updates!</a>`;
+    const link = `${config.bot_link}?start=${btoa(chatId)}`
+    const hi = await getMessage(chatId, 'hi')
+    const welcome = await getMessage(chatId, 'welcome')
+    const welcomeDesc = await getMessage(chatId, 'welcomeDesc')
+
+    const source = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5_Eq-smr3FcMNo8S_MBmVAiBLgG-QF1awag&s';
+    const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username} ${welcome}</b>\n\n${welcomeDesc}\n\n<a href='${config.channel_url}'>Subscribe to our channel for more Coins!</a>`;
     const replyMarkup = {
       caption: text,
       parse_mode: 'HTML',
@@ -41,32 +66,20 @@ async function startShow(msg) {
         inline_keyboard: [
           [
             {
-              text: "Launch",
-              url: config.mini_app_url,
+              text: await getMessage(chatId, 'inviteText'),
+              url: config.tg_link,
             },
           ],
           [
             {
-              text: "Invite for $HMSTR",
+              text: await getMessage(chatId, 'yqhqjb'),
               switch_inline_query: `${share_text}\n${link}`
             },
           ],
           [
             {
-              text: "Follow Our X",
-              url: config.twitter_url,
-            },
-          ],
-          [
-            {
-              text: "Subscribe to Our Channel",
+              text: await getMessage(chatId, 'joinChannel'),
               url: config.channel_url,
-            }
-          ],
-          [
-            {
-              text: "FAQ",
-              url: config.twitter_url,
             }
           ],
         ]
@@ -431,6 +444,7 @@ async function latestShow(msg, option_id) {
     bot_logger().error('latestShow error:', `${error}`)
   }
 }
+
 
 module.exports = {
   getMessage,
