@@ -102,18 +102,20 @@ const TaskList = db.sequelize.define(
 
 // TaskList.sync({ alter: true })
 
+const config = process.env
+
 /** 全局配置  */
 const Config = db.sequelize.define(
   'config',
   {
-    channel_id: { type: DataTypes.STRING, defaultValue: '-4568677951' },
+    channel_id: { type: DataTypes.STRING, defaultValue: config.CHANNEL_ID },
     invite_hy: { type: DataTypes.INTEGER, defaultValue: 100 },
     invite_normal: { type: DataTypes.INTEGER, defaultValue: 20 },    
     invite_friends_ratio: { type: DataTypes.INTEGER, defaultValue: 10 },
-    tg_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot/live' },
-    bot_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/face_live_bot' },
-    help_link: { type: DataTypes.STRING, defaultValue: 'https://t.me/cloudljj' },
-    channel_url: { type: DataTypes.STRING, defaultValue: 'https://t.me/+BBz-2V_f7uZiN2Fl' },
+    tg_link: { type: DataTypes.STRING, defaultValue: config.TG_LINK },
+    bot_link: { type: DataTypes.STRING, defaultValue: config.BOT_LINK },
+    help_link: { type: DataTypes.STRING, defaultValue: config.HELP_LINK },
+    channel_url: { type: DataTypes.STRING, defaultValue: config.CHANNEL_LINK },
   },
   {
     tableName: 'config'
