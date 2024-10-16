@@ -383,13 +383,12 @@ async function init_anchorList() {
     const language = ['', 'en', 've', 'ta', 'fp', 'pg', 'ta']
     for (let i = 0; i < 500; i ++) {
       const random1 = Math.ceil(Math.random() * 7)
-      const random2 = Math.ceil(Math.random() * 7)
-      const random3 = Math.ceil(Math.random() * 7)
+      const random3 = Math.ceil(Math.random() * 18)
       const random4 = Math.ceil(Math.random() * 7)
       const data = {
         name: `${nameList[random1]}${i + 1}`,
         age: random1 + 18,
-        video: `/video/${random2}.mp4`,
+        video: `/video/${random3}.mp4`,
         cover: `/image/${random3}.png`,
         avatar: `/image/${random3}.png`,
         style: Math.random() > 0.5 ? 'hot' : 'cc',
@@ -397,7 +396,7 @@ async function init_anchorList() {
         isCommend: Math.random() > 0.8 ? true : false,
         heart: 302 * random1,
         comment: 211 * random1,
-        time: 6584 * random2,
+        time: 6584 * random1,
         fens: 6542 * random3,
         return: 33 * random3,
         sort: i,
