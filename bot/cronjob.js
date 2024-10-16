@@ -34,7 +34,6 @@ async function sendMessageToChannel() {
 }
 // Execute the task every 15 minutes, specified timezone Asia/Chongqing
 cron.schedule('*/15 * * * *', () => {
-  console.log(222222)
   sendMessageToChannel()
 }, {
   scheduled: true,

@@ -2,10 +2,10 @@
   "scripts": {
     "init": "INIT=1 node server.js",
     "init:win": "set INIT=1 && node server.js",
-    "start": "nodemon server.js",
-    "dev": "set NODE_ENV=1 && nodemon server.js",
+    "start": "nodemon server.js --trace-deprecation",
+    "dev": "set NODE_ENV=1 && nodemon server.js --trace-deprecation",
     "dev:linux": "NODE_ENV=1 nodemon server.js",
-    "pm2": "pm2 start server.js --name 'Race-v1'"
+    "pm2": "pm2 start server.js --name 'faceLive-v1'"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
