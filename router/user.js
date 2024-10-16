@@ -39,9 +39,9 @@ async function login(req, resp) {
         data.user_id = data.id
         // 初始化积分
         if (data.isPremium) {
-          data.score = info.invite_normal
-        } else {
           data.score = info.invite_hy
+        } else {
+          data.score = info.invite_normal
         }
 
         const event_data = {
@@ -69,9 +69,9 @@ async function login(req, resp) {
               })
               let increment_score = 0
               if (data.isPremium) {
-                increment_score = info.invite_normal
-              } else {
                 increment_score = info.invite_hy
+              } else {
+                increment_score = info.invite_normal
               }
               if (parentUser) {
                 const event_data = {
