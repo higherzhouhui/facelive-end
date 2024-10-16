@@ -122,7 +122,6 @@ bot.on('message', async (msg) => {
   try {
     const chatId = msg.chat.id;
     const text = msg.text;
-    console.log(chatId, 11111)
     const newUser = msg.new_chat_member
     if (newUser && !newUser.is_bot) {
       // 可判断任务是否完成
