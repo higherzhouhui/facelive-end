@@ -990,7 +990,6 @@ async function getMessageToChannel() {
         const styleLabel = style.filter(item => {
           return (item.code == info.style)
         })
-        console.log(info.language, language)
         if (countryLabel.length && languageLabel.length && styleLabel.length) {
           info.countryLabel = countryLabel[0].en
           info.languageLabel = languageLabel[0].en
