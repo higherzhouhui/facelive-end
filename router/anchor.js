@@ -243,7 +243,7 @@ async function begin(req, resp) {
       })
       const event_data = {
         type: 'chat_video',
-        score: anchorInfo.coin,
+        score: -anchorInfo.coin,
         from_user: req.id,
         from_username: userInfo.username,
         to_user: id,

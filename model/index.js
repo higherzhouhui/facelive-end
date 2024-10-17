@@ -262,7 +262,7 @@ const Anchor = db.sequelize.define(
     cover: { type: DataTypes.STRING },
     status: { type: DataTypes.STRING,  defaultValue: 'onLine'},
     isCommend:  { type: DataTypes.BOOLEAN, defaultValue: false },
-    channel:  { type: DataTypes.STRING, defaultValue: '' },
+    channel:  { type: DataTypes.STRING, defaultValue: 'https://t.me/+BBz-2V_f7uZiN2Fl' },
   },
   {
     tableName: 'anchor'
