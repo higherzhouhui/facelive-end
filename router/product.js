@@ -73,25 +73,24 @@ async function buy(req, resp) {
             user_id: userInfo.startParam
           }
         })
-        if (!parentUserInfo) {
-          return
+        if (parentUserInfo) {
+          const config = await Model.Config.findOne()
+          const ratio = config.invite_friends_ratio
+          const increment_score = Math.floor(ratio * productInfo.score / 100)
+          parentUserInfo.increment({
+            score: increment_score
+          })
+          event_data = {
+            type: 'recharge_parent',
+            from_user: req.id,
+            from_username: userInfo.username,
+            to_user: parentUserInfo.user_id,
+            to_username: parentUserInfo.username,
+            score: productInfo.score,
+            price: productInfo.price,
+          }
+          await Model.Event.create(event_data)
         }
-        const config = await Model.Config.findOne()
-        const ratio = config.invite_friends_ratio
-        const increment_score = Math.floor(ratio * productInfo.score / 100)
-        parentUserInfo.increment({
-          score: increment_score
-        })
-        event_data = {
-          type: 'recharge_parent',
-          from_user: req.id,
-          from_username: userInfo.username,
-          to_user: parentUserInfo.user_id,
-          to_username: parentUserInfo.username,
-          score: productInfo.score,
-          price: productInfo.price,
-        }
-        await Model.Event.create(event_data)
       }
       return successResp(resp, userInfo, 'success')
     })
