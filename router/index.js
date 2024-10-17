@@ -15,6 +15,7 @@ router.post('/user/h5PcLogin', user.h5PcLogin)
 router.post('/user/update', user.updateInfo)
 router.post('/user/check', user.userCheck)
 router.post('/user/bindWallet', user.bindWallet)
+router.post('/user/changeLang', user.changeLang)
 router.get('/user/list', user.getUserList)
 router.get('/user/subList', user.getSubUserList)
 router.get('/user/subTotal', user.getSubUserTotal)
@@ -38,6 +39,7 @@ router.get('/anchor/chatList', anchor.chatList)
 
 // 产品
 router.get('/product/list', product.list)
+router.post('/product/buy', product.buy)
 
 
 router.get('/game/begin', game.begin)

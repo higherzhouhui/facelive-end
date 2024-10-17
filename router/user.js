@@ -401,56 +401,61 @@ async function userCheck(req, resp) {
  */
 async function bindWallet(req, resp) {
   user_logger().info('用户信息', req.id)
-  const tx = await dataBase.sequelize.transaction()
   try {
-    const user = await Model.User.findOne({
-      where: {
-        user_id: req.id
+    await dataBase.sequelize.transaction(async (t) => {
+      const { wallet } = req.body
+      let userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      if (!userInfo) {
+        return errorResp(resp, 403, `can't find this user`)
       }
+      userInfo = await userInfo.update({
+        wallet: wallet
+      })
+      return successResp(resp, userInfo, 'success')
     })
-    if (!user) {
-      return errorResp(resp, 403, `can't find this user`)
-    }
-    const config = await Model.Config.findOne()
-    let score = 0
-    if (!user.bind_wallet_score) {
-      score = config.bind_wallet_score
-    }
-    const updateData = {
-      wallet: req.body.wallet,
-      wallet_nickName: req.body.wallet_nickName,
-      score: user.score + score,
-      bind_wallet_score: user.bind_wallet_score + score,
-    }
-    await Model.User.update(updateData, {
-      where: {
-        user_id: req.id
-      },
-      transaction: tx
-    })
-    // 如果不是初次绑定，则记录增加积分
-    if (score) {
-      const event_data = {
-        type: 'Bind Wallet',
-        from_user: req.id,
-        from_username: user.username,
-        to_user: req.id,
-        to_username: user.username,
-        score: score,
-        desc: `${user.username} bind wallet and get ${score} pts`,
-      }
-      await Model.Event.create(event_data)
-    }
-   
-    await tx.commit()
-    return successResp(resp, updateData, 'success')
   } catch (error) {
-    await tx.rollback()
     user_logger().error('用户绑定钱包失败', error)
     console.error(`${error}`)
     return errorResp(resp, 400, `${error}`)
   }
 }
+
+/**
+ * post /api/user/changeLang
+ * @summary 用户切换语言
+ * @tags user
+ * @description 用户切换语言
+ * @security - Authorization
+ */
+async function changeLang(req, resp) {
+  user_logger().info('用户信息', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const { lang } = req.body
+      let userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      if (!userInfo) {
+        return errorResp(resp, 403, `can't find this user`)
+      }
+      userInfo = await userInfo.update({
+        lang: lang
+      })
+      return successResp(resp, userInfo, 'success')
+    })
+  } catch (error) {
+    user_logger().error('用户切换语言失败', error)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
 
 /**
  * get /api/user/list
@@ -1088,4 +1093,5 @@ module.exports = {
   getMyScoreHistory,
   h5PcLogin,
   getSubUserTotalAndList,
+  changeLang,
 }

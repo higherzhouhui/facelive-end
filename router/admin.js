@@ -118,7 +118,7 @@ async function init_productList() {
     const data = [
       {
         score: 10000,
-        price: 0.99
+        price: 0.000000000099
       },
       {
         score: 30000,
