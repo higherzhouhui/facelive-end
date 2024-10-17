@@ -15,8 +15,11 @@ function createToken(data) {
 
 async function getMessage(lang, key) {
   try {
-    let l = lang || 'en'
-    const messages = require(`../locales/${lang}/messages.json`)
+    let clang = 'en'
+    if (lang && lang != 'null') {
+      clang = lang 
+    }
+    const messages = require(`../locales/${clang}/messages.json`)
     return messages[key]
   } catch (error) {
     console.error(error)

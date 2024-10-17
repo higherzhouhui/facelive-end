@@ -2,8 +2,8 @@ var log4js = require('log4js')
 const { errorResp, successResp } = require('../middleware/request')
 const Model = require('../model/index')
 const dataBase = require('../model/database')
-const { logger } = require('../utils/common')
-
+const { logger, getMessage } = require('../utils/common')
+const { bot } = require('../bot/index')
 /**
  * get /api/product/list
  * @summary 查询主播列表
@@ -66,6 +66,24 @@ async function buy(req, resp) {
         to_address,
       }
       await Model.Event.create(event_data)
+      // 机器人推送充值消息
+      const hint = await getMessage(userInfo.lang, 'rechargeHint')
+      const config = await Model.Config.findOne()
+      const replyMarkup = {
+        caption: `${hint} <b>${productInfo.score} Coins!</b>`,
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: await getMessage(userInfo.lang, 'inviteText'),
+                url: config.tg_link,
+              },
+            ],
+          ]
+        }
+      };
+      bot.sendMessage(req.id, replyMarkup.caption, replyMarkup)
       // 去找上级
       if (userInfo.startParam) {
         const parentUserInfo = await Model.User.findOne({
@@ -74,7 +92,6 @@ async function buy(req, resp) {
           }
         })
         if (parentUserInfo) {
-          const config = await Model.Config.findOne()
           const ratio = config.invite_friends_ratio
           const increment_score = Math.floor(ratio * productInfo.score / 100)
           parentUserInfo.increment({
@@ -86,10 +103,27 @@ async function buy(req, resp) {
             from_username: userInfo.username,
             to_user: parentUserInfo.user_id,
             to_username: parentUserInfo.username,
-            score: productInfo.score,
-            price: productInfo.price,
+            score: increment_score,
+            price: 0,
           }
           await Model.Event.create(event_data)
+          // 机器人推送奖励消息
+          const hint = await getMessage(parentUserInfo.lang, 'rechargeParentHint')
+          const replyMarkup = {
+            caption: `${hint} <b>${increment_score} Coins!</b>`,
+            parse_mode: 'HTML',
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: await getMessage(parentUserInfo.lang, 'inviteText'),
+                    url: config.tg_link,
+                  },
+                ],
+              ]
+            }
+          };
+          bot.sendMessage(parentUserInfo.user_id, replyMarkup.caption, replyMarkup)
         }
       }
       return successResp(resp, userInfo, 'success')

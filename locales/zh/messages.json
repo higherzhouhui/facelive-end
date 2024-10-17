@@ -4,9 +4,12 @@
   "welcomeDesc": "- 成千上万的女孩准备与你进行一对一视频聊天。每天都有新的女孩加入。💃🏻\n- 加入她们的私人群组，获取热辣的专属照片、视频和直播。📸\n- 探索隐藏的群组，发现更多等待你的免费18岁以上内容。🔞",
   "inviteText": "💝 FaceLive 女孩",
   "joinChannel": "加入社区",
-  "yqhqjb": "邀请好友获取Coins",
+  "yqhqjb": "邀请好友获取更多 Coins",
   "subscribeChannel": "加入我们的群组获取更多资讯！",
   "loginError": "登录格式错误，请重新登陆！",
   "notUser": "未找到该用户，请重新登录！",
-  "noScore": "您的余额不足"
+  "noScore": "您的余额不足",
+  "rechargeHint": "您的充值已到账",
+  "rechargeParentHint": "恭喜你获得好友充值奖励",
+  "inviteHint": "恭喜你获得好友注册奖励奖励"
 }

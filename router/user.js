@@ -4,6 +4,7 @@ const Model = require('../model/index')
 const dataBase = require('../model/database')
 const moment = require('moment/moment')
 const { isLastDay, resetUserTicket, createToken, getMessage } = require('../utils/common')
+const { bot } = require('../bot/index')
 
 /**
  * post /api/user/login
@@ -27,7 +28,7 @@ async function login(req, resp) {
       if (!(data.hash && data.id && data.username && data.authDate)) {
         user_logger().error('Login failed', 'Data format exception')
         const lang = data.languageCode == 'zh-hans' ? 'zh' : 'en'
-        return errorResp(resp,  400,  getMessage(lang, 'loginError'))
+        return errorResp(resp, 400, getMessage(lang, 'loginError'))
       }
       let user = await Model.User.findOne({
         where: {
@@ -36,13 +37,13 @@ async function login(req, resp) {
       })
       // 找到当前用户，如果存在则返回其数据，如果不存在则新创建
       if (!user) {
-        const info = await Model.Config.findOne()
+        const config = await Model.Config.findOne()
         data.user_id = data.id
         // 初始化积分
         if (data.isPremium) {
-          data.score = info.invite_hy
+          data.score = config.invite_hy
         } else {
-          data.score = info.invite_normal
+          data.score = config.invite_normal
         }
 
         const event_data = {
@@ -70,9 +71,9 @@ async function login(req, resp) {
               })
               let increment_score = 0
               if (data.isPremium) {
-                increment_score = info.invite_hy
+                increment_score = config.invite_hy
               } else {
-                increment_score = info.invite_normal
+                increment_score = config.invite_normal
               }
               if (parentUser) {
                 const event_data = {
@@ -90,6 +91,23 @@ async function login(req, resp) {
                   score: increment_score,
                   invite_friends_score: increment_score,
                 })
+                // 机器人推送给父元素邀请奖励
+                const hint = await getMessage(parentUser.lang, 'inviteHint')
+                const replyMarkup = {
+                  caption: `${hint} <b>${increment_score} Coins!</b>`,
+                  parse_mode: 'HTML',
+                  reply_markup: {
+                    inline_keyboard: [
+                      [
+                        {
+                          text: await getMessage(parentUser.lang, 'inviteText'),
+                          url: config.tg_link,
+                        },
+                      ],
+                    ]
+                  }
+                };
+                bot.sendMessage(parentUser.user_id, replyMarkup.caption, replyMarkup)
               }
             }
           }
@@ -109,7 +127,7 @@ async function login(req, resp) {
         await user.update(updateData)
         await resetUserTicket(user)
         const token = createToken(user)
-        return successResp(resp, {token, ...user.dataValues}, 'success')
+        return successResp(resp, { token, ...user.dataValues }, 'success')
       }
     })
   } catch (error) {
@@ -137,7 +155,7 @@ async function h5PcLogin(req, resp) {
       const data = req.body
       if (!(data.wallet && data.wallet_nickName && data.username)) {
         user_logger().error('Login failed', 'Data format exception')
-        return errorResp(resp,  400, `validate error`)
+        return errorResp(resp, 400, `validate error`)
       }
       let user = await Model.User.findOne({
         where: {
@@ -232,7 +250,7 @@ async function h5PcLogin(req, resp) {
       } else {
         const token = createToken(user.dataValues)
         const userInfo = await resetUserTicket(user)
-        return successResp(resp, {...userInfo.dataValues, token}, 'success')
+        return successResp(resp, { ...userInfo.dataValues, token }, 'success')
       }
     })
   } catch (error) {
