@@ -56,9 +56,10 @@ async function startShow(msg) {
     const hi = await getMessage(chatId, 'hi')
     const welcome = await getMessage(chatId, 'welcome')
     const welcomeDesc = await getMessage(chatId, 'welcomeDesc')
-
+    const subscribeChannel = await getMessage(chatId, 'subscribeChannel')
+    
     const source = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5_Eq-smr3FcMNo8S_MBmVAiBLgG-QF1awag&s';
-    const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username} ${welcome}</b>\n\n${welcomeDesc}\n\n<a href='${config.channel_url}'>Subscribe to our channel for more Coins!</a>`;
+    const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username} ${welcome}</b>\n\n${welcomeDesc}\n\n<a href='${config.channel_url}'>${subscribeChannel}</a>`;
     const replyMarkup = {
       caption: text,
       parse_mode: 'HTML',

@@ -1,7 +1,7 @@
 {
   "scripts": {
     "init": "INIT=1 node server.js",
-    "init:win": "set INIT=1 && node server.js",
+    "init:win": "set INIT=1 && set NODE_ENV=1 && node server.js",
     "start": "nodemon server.js --trace-deprecation",
     "dev": "set NODE_ENV=1 && nodemon server.js --trace-deprecation",
     "dev:linux": "NODE_ENV=1 nodemon server.js",

@@ -243,7 +243,6 @@ const Anchor = db.sequelize.define(
   'anchor',
   {
     name: { type: DataTypes.STRING },
-   
     coin: { type: DataTypes.INTEGER, defaultValue: 500 },
     video: { type: DataTypes.STRING },
     avatar: { type: DataTypes.STRING },

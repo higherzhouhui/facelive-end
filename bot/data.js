@@ -50,6 +50,8 @@ async function create_user(sendData) {
       if (!userInfo) {
         const config = await Model.Config.findOne()
         const text = data.text
+        data.score = config.invite_normal
+        
         if (text.split(' ').length == 2) {
           const parameter = text.split(' ')[1]; // 假设参数紧跟在/start之后
           if (parameter) {
@@ -1044,7 +1046,6 @@ function handleSendData(sendData) {
   delete data.entities
   data.user_id = data.id
   delete data.id
-
   return data
 }
 

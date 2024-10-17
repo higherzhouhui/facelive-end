@@ -353,8 +353,8 @@ async function init_countryList() {
         flag: '🇧🇩',
         label: 'bd',
         zh: '孟加拉国',
-        en: 'China',
-        code: 'Bangladesh',
+        en: 'Bangladesh',
+        code: 'bd',
         sort: 70,
       },
       {
