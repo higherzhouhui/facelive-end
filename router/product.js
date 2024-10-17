@@ -41,7 +41,7 @@ async function buy(req, resp) {
       const { id, from_address, to_address } = req.body
       const productInfo = await Model.Product.findByPk(id)
       if (!productInfo) {
-        return errorResp(resp, 400, 'not found this product')
+        return errorResp(resp, 400, `can't find this product`)
       }
       let userInfo = await Model.User.findOne({
         where: {
@@ -49,7 +49,7 @@ async function buy(req, resp) {
         }
       })
       if (!userInfo) {
-        return errorResp(resp, 403, 'not found this user')
+        return errorResp(resp, 403, `can't find this user`)
       }
       userInfo = await userInfo.increment({
         score: productInfo.score

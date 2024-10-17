@@ -13,6 +13,16 @@ function createToken(data) {
   return token
 }
 
+async function getMessage(lang, key) {
+  try {
+    let l = lang || 'en'
+    const messages = require(`../locales/${lang}/messages.json`)
+    return messages[key]
+  } catch (error) {
+    console.error(error)
+    return key
+  }
+}
 
 function timestampToTime(timestamp) {
   const date = new Date(timestamp * 1000) // 创建 Date 对象，使用时间戳作为参数
@@ -242,4 +252,5 @@ module.exports = {
   createToken,
   logger,
   getRandomInt,
+  getMessage,
 }

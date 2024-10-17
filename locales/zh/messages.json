@@ -5,5 +5,8 @@
   "inviteText": "💝 FaceLive 女孩",
   "joinChannel": "加入社区",
   "yqhqjb": "邀请好友获取Coins",
-  "subscribeChannel": "加入我们的群组获取更多资讯！"
+  "subscribeChannel": "加入我们的群组获取更多资讯！",
+  "loginError": "登录格式错误，请重新登陆！",
+  "notUser": "未找到该用户，请重新登录！",
+  "noScore": "您的余额不足"
 }

@@ -2,7 +2,7 @@ var log4js = require('log4js')
 const { errorResp, successResp } = require('../middleware/request')
 const Model = require('../model/index')
 const dataBase = require('../model/database')
-const { logger } = require('../utils/common')
+const { logger, getMessage } = require('../utils/common')
 
 /**
  * get /api/anchor/list
@@ -123,7 +123,7 @@ async function follow(req, resp) {
       let { id, status, heart } = req.body
       const detail = await Model.Anchor.findByPk(id)
       if (!detail) {
-        return errorResp(resp, 400, 'not found this anchor!')
+        return errorResp(resp, 400, `can't find this anchor`)
       }
       const userInfo = await Model.User.findOne({
         where: {
@@ -235,14 +235,14 @@ async function begin(req, resp) {
         }
       })
       if (!userInfo) {
-        return errorResp(resp, 403, 'not found this user')
+        return errorResp(resp, 403, `can't find this user`)
       }
       const anchorInfo = await Model.Anchor.findByPk(id)
       if (!anchorInfo) {
-        return errorResp(resp, 400, 'not found this anchor')
+        return errorResp(resp, 400, `can't find this anchor`)
       }
       if (userInfo.score < anchorInfo.coin) {
-        return errorResp(resp, 388, 'Sorry, your credit is running low')
+        return errorResp(resp, 388, getMessage(userInfo.lang, 'noScore'))
       }
       let chat_anchor = userInfo.chat_anchor
       

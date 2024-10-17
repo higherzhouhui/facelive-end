@@ -3,7 +3,7 @@ const { errorResp, successResp } = require('../middleware/request')
 const Model = require('../model/index')
 const dataBase = require('../model/database')
 const moment = require('moment/moment')
-const { isLastDay, resetUserTicket, createToken } = require('../utils/common')
+const { isLastDay, resetUserTicket, createToken, getMessage } = require('../utils/common')
 
 /**
  * post /api/user/login
@@ -26,7 +26,8 @@ async function login(req, resp) {
       }
       if (!(data.hash && data.id && data.username && data.authDate)) {
         user_logger().error('Login failed', 'Data format exception')
-        return errorResp(resp,  400, `validate error`)
+        const lang = data.languageCode == 'zh-hans' ? 'zh' : 'en'
+        return errorResp(resp,  400,  getMessage(lang, 'loginError'))
       }
       let user = await Model.User.findOne({
         where: {
@@ -288,7 +289,7 @@ async function userCheck(req, resp) {
         }
       })
       if (!user) {
-        return errorResp(resp, 403, `未找到该用户`)
+        return errorResp(resp, 403, `can't find this user`)
       }
       let day = 1
       let today = moment().utc().format('MM-DD')
@@ -484,7 +485,7 @@ async function getUserList(req, resp) {
       }
     })
     if (!userInfo) {
-      return errorResp(resp, 403, 'not found this user')
+      return errorResp(resp, 403, `can't find this user`)
     }
 
     const sql = `SELECT 
@@ -569,7 +570,6 @@ async function getSubUserTotal(req, resp) {
         }
       }
     }
-
     return successResp(resp, { total: subUser.count, ...parentObj }, 'success')
   } catch (error) {
     user_logger().error('获取下级总会员失败', error)
