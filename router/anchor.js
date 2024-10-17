@@ -88,6 +88,17 @@ async function info(req, resp) {
             detail.dataValues.isLike = true
           }
         }
+        const userVideo = await Model.UserVideo.findOne({
+          where: {
+            user_id: req.id,
+            anchor_id: id
+          }
+        })
+        if (userVideo) {
+          detail.dataValues.currentTime = userVideo.dataValues.currentTime
+        } else {
+          detail.dataValues.currentTime = 0
+        }
       }
       return successResp(resp, detail.dataValues, 'success')
     })
@@ -179,12 +190,22 @@ async function next(req, resp) {
         const follow_anchor = userInfo.follow_anchor
         if (follow_anchor) {
           const list = follow_anchor.split(',')
-          console.log(list)
           if (list.includes(`${detail.id}`)) {
             detail.isLike = true
           } else {
             detail.isLike = false
           }
+        }
+        const userVideo = await Model.UserVideo.findOne({
+          where: {
+            user_id: req.id,
+            anchor_id: id
+          }
+        })
+        if (userVideo) {
+          detail.currentTime = userVideo.dataValues.currentTime
+        } else {
+          detail.currentTime = 0
         }
       }
       return successResp(resp, detail, 'success')
@@ -214,7 +235,7 @@ async function begin(req, resp) {
         }
       })
       if (!userInfo) {
-        return errorResp(resp, 400, 'not found this user')
+        return errorResp(resp, 403, 'not found this user')
       }
       const anchorInfo = await Model.Anchor.findByPk(id)
       if (!anchorInfo) {
@@ -241,6 +262,28 @@ async function begin(req, resp) {
         time: 60, 
         return: 1
       })
+      const UserVideo = await Model.UserVideo.findOne({
+        where: {
+          user_id: req.id,
+          anchor_id: anchorInfo.id,
+        }
+      })
+      // 记录用户观看视频的位置
+      const UserVideoData = {
+        user_id: req.id,
+        anchor_id: anchorInfo.id,
+        times: 1,
+        currentTime: 60
+      }
+      if (UserVideo) {
+        UserVideo.increment({
+          times: 1,
+          currentTime: 60
+        })
+      } else {
+        await Model.UserVideo.create(UserVideoData)
+      }
+      
       const event_data = {
         type: 'chat_video',
         score: -anchorInfo.coin,

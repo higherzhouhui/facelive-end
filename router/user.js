@@ -670,7 +670,7 @@ async function getMyScoreHistory(req, resp) {
     const page = req.query.page
     const list = await Model.Event.findAndCountAll({
       order: [['createdAt', 'desc']],
-      attributes: ['from_username', 'score', 'createdAt', 'type', 'price'],
+      attributes: ['from_username', 'score', 'createdAt', 'type', 'price', 'from_user'],
       offset: (page - 1) * 20,
       limit: 20 * 1,
       where: {

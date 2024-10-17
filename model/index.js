@@ -100,6 +100,21 @@ const TaskList = db.sequelize.define(
   }
 )
 
+
+/** 记录用户观看的每个视频长度，确保续费后能续上，不看重复的  */
+const UserVideo = db.sequelize.define(
+  'uservideo',
+  {
+    user_id: { type: DataTypes.BIGINT },
+    anchor_id: { type: DataTypes.INTEGER },
+    times: { type: DataTypes.INTEGER },
+    currentTime: { type: DataTypes.INTEGER, defaultValue: 0 },
+  },
+  {
+    tableName: 'uservideo'
+  }
+)
+
 // TaskList.sync({ alter: true })
 
 const config = process.env
@@ -329,4 +344,5 @@ module.exports = {
   SystemLanguage,
   Product,
   BotEvent,
+  UserVideo,
 }
