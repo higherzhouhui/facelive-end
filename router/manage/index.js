@@ -448,8 +448,10 @@ async function getAllConfig(req, resp) {
     const group = await Model.Group.findAll({
       order: [['sort', 'asc']]
     })
-
-    return successResp(resp, { base, country, language, style, group })
+    const systemLanguage = await Model.SystemLanguage.findAll({
+      order: [['sort', 'asc']]
+    })
+    return successResp(resp, { base, country, language, style, group, systemLanguage })
   } catch (error) {
     manager_logger().info('Failed to view system configuration', error)
     console.error(`${error}`)
