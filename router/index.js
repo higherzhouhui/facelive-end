@@ -34,6 +34,7 @@ router.get('/system/resetTicket', user.resetTicketInfo)
 // 主播
 router.get('/anchor/list', anchor.list)
 router.get('/anchor/three', anchor.three)
+router.get('/anchor/more', anchor.more)
 router.get('/anchor/info', anchor.info)
 router.get('/anchor/next', anchor.next)
 router.get('/anchor/begin', anchor.begin)

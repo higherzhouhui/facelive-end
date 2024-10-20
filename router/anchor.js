@@ -272,6 +272,61 @@ async function three(req, resp) {
 }
 
 /**
+ * get /api/anchor/more
+ * @summary 查询后两个主播信息
+ * @tags anchor
+ * @description 查询后两个主播信息
+ * @security - Authorization
+ */
+async function more(req, resp) {
+  anchor_logger().info('查询后两个主播信息', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const { id } = req.query
+      const nextAnchor1 = await getNextAnchor(id)
+      const nextAnchor2 = await getNextAnchor(nextAnchor1.id)
+      const currentAnchor = await Model.Anchor.findByPk(id)
+      const userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      const details = [nextAnchor1, nextAnchor2]
+      if (userInfo) {
+        for (let i = 0; i < details.length; i++) {
+          const detail = details[i]
+          const follow_anchor = userInfo.follow_anchor
+          if (follow_anchor) {
+            const list = follow_anchor.split(',')
+            if (list.includes(`${id}`)) {
+              detail.dataValues.isLike = true
+            }
+          }
+          const userVideo = await Model.UserVideo.findOne({
+            where: {
+              user_id: req.id,
+              anchor_id: id
+            }
+          })
+          if (userVideo) {
+            detail.dataValues.currentTime = userVideo.dataValues.currentTime
+          } else {
+            detail.dataValues.currentTime = 0
+          }
+          detail[i] = detail
+        }
+      }
+      return successResp(resp, { details }, 'success')
+    })
+  } catch (error) {
+    logger('anchor', 'error').error(`${req.id} 查询后两个主播信息失败：${error}`)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+
+/**
  * get /api/anchor/begin
  * @summary 开始播放直播
  * @tags anchor
@@ -451,8 +506,15 @@ async function chatList(req, resp) {
 
 //----------------------------- private method --------------
 async function getNextAnchor(id) {
-  const anchorId = parseInt(id) + 1
-  const detail = await Model.Anchor.findByPk(anchorId)
+  const originAnchor = await Model.Anchor.findByPk(id)
+  const sort = originAnchor.sort || 0
+  const detail = await Model.Anchor.findOne({
+    where: {
+      sort: {
+        [dataBase.Op.gt]: sort
+      }
+    }
+  })
   if (detail) {
     return detail
   } else {
@@ -461,15 +523,23 @@ async function getNextAnchor(id) {
 }
 
 async function getLastAnchor(id) {
-  const anchorId = parseInt(id) - 1
-  const detail = await Model.Anchor.findByPk(anchorId)
+  const originAnchor = await Model.Anchor.findByPk(id)
+  const maxSort = await Model.Anchor.findOne({
+    order: [['sort', 'desc']]
+  })
+  const sort = originAnchor.sort || maxSort.sort
+  const detail = await Model.Anchor.findOne({
+    order: [['updatedAt', 'desc']],
+    where: {
+      sort: {
+        [dataBase.Op.lt]: sort
+      }
+    }
+  })
   if (detail) {
     return detail
   } else {
-    const list = await Model.Anchor.findOne({
-      order: [['sort', 'desc']]
-    })
-    return getNextAnchor(list.dataValues.id)
+    return getNextAnchor(maxSort.sort)
   }
 }
 
@@ -502,4 +572,5 @@ module.exports = {
   followList,
   chatList,
   three,
+  more,
 }
