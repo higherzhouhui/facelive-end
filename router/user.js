@@ -119,13 +119,19 @@ async function login(req, resp) {
         }
         await Model.User.create(data)
         const token = createToken(data)
-
+        // 增加一条访问记录
+        await Model.Visit.create({user_id: data.user_id})
         return successResp(resp, { ...data, is_Tg: true, is_New: true, token }, 'success')
       } else {
         //更新用户信息
-        const updateData = data.user
+        const updateData = {
+          firstName: data.firstName,
+          isPremium: data.isPremium,
+          lastName: data.lastName
+        }
+        // 增加一条访问记录
+        await Model.Visit.create({user_id: data.user_id})
         await user.update(updateData)
-        await resetUserTicket(user)
         const token = createToken(user)
         return successResp(resp, { token, ...user.dataValues }, 'success')
       }

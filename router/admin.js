@@ -71,11 +71,13 @@ async function init_groupList() {
         label: 'free',
         code: 'free',
         zh: '免费',
+        en: 'Free',
         sort: 5,
       },
       {
         label: 'paid',
         code: 'paid',
+        en: 'Paid',
         zh: '付费',
         sort: 10,
       },

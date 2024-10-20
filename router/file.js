@@ -2,10 +2,8 @@ const multer = require('multer');
 const fs = require('fs');
 var log4js = require('log4js')
 const { errorResp, successResp } = require('../middleware/request')
-const Model = require('../model/index')
 const dataBase = require('../model/database')
-const express = require('express')
-const router = express.Router()
+const systemPath = require('path');
 
 const imagesDirectory = 'public';
 const imageDir = '/' + imagesDirectory + '/';
@@ -30,11 +28,12 @@ const storageDisk = multer.diskStorage({
     });
   }
 })
+const fileSize = 1024 * 1024 * 100
+const upload = multer({ storage: storageDisk, limits: { fileSize: fileSize, files: 1 } })
 
-const upload = multer({ storage: storageDisk, limits: { fileSize: 1000000, files: 1 } })
 
 /**
- * get /api/file/upload
+ * post /api/dogAdmin/upload
  * @summary 上传文件
  * @tags file
  * @description 上传文件
@@ -44,12 +43,19 @@ async function uploadFile(req, resp) {
   file_logger().info('上传文件')
   try {
     await dataBase.sequelize.transaction(async (t) => {
-      const { type } = req.body
-      console.log(type)
+      const { type, path } = req.body
       if (!uploadedFileName) {
         return errorResp(resp, 400, 'error')
       }
-      return successResp(resp, {}, 'success')
+      // 移动文件
+      fs.rename(systemPath.join(__dirname, `../public/${uploadedFileName}`), systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`), function (err) {
+        if (err) {
+          console.error('Error moving file:', err);
+          return;
+        }
+      });
+
+      return successResp(resp, { fileUrl: `/${type}/${path}/${uploadedFileName}` }, 'success')
     })
   } catch (error) {
     file_logger().error('上传文件失败', error)
@@ -57,9 +63,6 @@ async function uploadFile(req, resp) {
     return errorResp(resp, 400, `${error}`)
   }
 }
-
-router.post('/admin/upload', upload.single('file'), uploadFile)
-
 
 //----------------------------- private method --------------
 // 配置日志输出
@@ -84,4 +87,5 @@ function file_logger() {
 
 module.exports = {
   uploadFile,
+  upload,
 }

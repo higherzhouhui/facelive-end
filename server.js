@@ -27,7 +27,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // 解析formdata数据
-app.use(multipart())
+// app.use(multipart())
 
 // 存储IP和请求时间的缓存
 const rateLimitCache = new Map();

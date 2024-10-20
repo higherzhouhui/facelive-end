@@ -4,20 +4,20 @@ const db = require('./database')
 const User = db.sequelize.define(
   'user',
   {
-    authDate: { type: DataTypes.STRING, defaultValue: '' },
-    chatInstance: { type: DataTypes.STRING, defaultValue: '' },
-    hash: { type: DataTypes.STRING },
-    query_id: { type: DataTypes.STRING },
-    addedToAttachmentMenu: { type: DataTypes.STRING },
-    allowsWriteToPm: { type: DataTypes.BOOLEAN },
-    firstName: { type: DataTypes.STRING },
-    user_id: { type: DataTypes.BIGINT },
-    languageCode: { type: DataTypes.STRING },
-    lastName: { type: DataTypes.STRING },
-    username: { type: DataTypes.STRING },
-    score: { type: DataTypes.DOUBLE, defaultValue: 0 },
-    isPremium: { type: DataTypes.BOOLEAN, defaultValue: false },
-    startParam: { type: DataTypes.STRING, defaultValue: '0' },
+    authDate: { type: DataTypes.STRING, defaultValue: '' }, // 登录时间
+    chatInstance: { type: DataTypes.STRING, defaultValue: '' }, //聊天实例
+    hash: { type: DataTypes.STRING }, // hash
+    queryId: { type: DataTypes.STRING }, // 查询id
+    addedToAttachmentMenu: { type: DataTypes.STRING }, // 增加到菜单
+    allowsWriteToPm: { type: DataTypes.BOOLEAN }, // 是否允许发送信息到聊天框
+    firstName: { type: DataTypes.STRING }, // 姓
+    user_id: { type: DataTypes.BIGINT }, // tg身份ID（唯一）
+    languageCode: { type: DataTypes.STRING }, //系统语言
+    lastName: { type: DataTypes.STRING }, // 名
+    username: { type: DataTypes.STRING }, // 用户名
+    isPremium: { type: DataTypes.BOOLEAN, defaultValue: false }, //是否为会员
+    startParam: { type: DataTypes.STRING, defaultValue: 'root' }, //邀请码
+    score: { type: DataTypes.DOUBLE, defaultValue: 0 }, 
     photoUrl: { type: DataTypes.STRING },
     invite_friends_score: { type: DataTypes.BIGINT, defaultValue: 0 },
     invite_friends_game_score: { type: DataTypes.BIGINT, defaultValue: 0 },
@@ -27,13 +27,14 @@ const User = db.sequelize.define(
     check_date: { type: DataTypes.STRING, defaultValue: '' },
     ticket: { type: DataTypes.BIGINT, defaultValue: 10 },
     wallet: { type: DataTypes.STRING },
-    is_Tg: { type: DataTypes.BOOLEAN, defaultValue: true },
     is_New: { type: DataTypes.BOOLEAN, defaultValue: true },
-    last_play_time: { type: DataTypes.DATE },
-    level: { type: DataTypes.INTEGER, defaultValue: 1},
+    is_really: { type: DataTypes.BOOLEAN, defaultValue: true },
     follow_anchor: { type: DataTypes.STRING },
     chat_anchor: { type: DataTypes.STRING },
     lang: { type: DataTypes.STRING },
+    use_ton: { type: DataTypes.DOUBLE, defaultValue: 0 },
+    // level: { type: DataTypes.INTEGER, defaultValue: 0 },
+    // path: { type: DataTypes.STRING, defaultValue: '-' },
   },
   {
     tableName: 'user',
@@ -65,6 +66,17 @@ const BotEvent = db.sequelize.define(
   },
   {
     tableName: 'botEvent'
+  }
+)
+
+/** 访问量  */
+const Visit = db.sequelize.define(
+  'visit',
+  {
+    user_id: { type: DataTypes.BIGINT },
+  },
+  {
+    tableName: 'visit'
   }
 )
 
@@ -125,7 +137,7 @@ const Config = db.sequelize.define(
   {
     channel_id: { type: DataTypes.STRING, defaultValue: config.CHANNEL_ID },
     invite_hy: { type: DataTypes.INTEGER, defaultValue: 100000 },
-    invite_normal: { type: DataTypes.INTEGER, defaultValue: 20000 },    
+    invite_normal: { type: DataTypes.INTEGER, defaultValue: 20000 },
     invite_friends_ratio: { type: DataTypes.DOUBLE, defaultValue: 10 },
     tg_link: { type: DataTypes.STRING, defaultValue: config.TG_LINK },
     bot_link: { type: DataTypes.STRING, defaultValue: config.BOT_LINK },
@@ -274,9 +286,9 @@ const Anchor = db.sequelize.define(
     style: { type: DataTypes.STRING },
     group: { type: DataTypes.STRING },
     cover: { type: DataTypes.STRING },
-    status: { type: DataTypes.STRING,  defaultValue: 'onLine'},
-    isCommend:  { type: DataTypes.BOOLEAN, defaultValue: false },
-    channel:  { type: DataTypes.STRING, defaultValue: 'https://t.me/+BBz-2V_f7uZiN2Fl' },
+    status: { type: DataTypes.STRING, defaultValue: 'onLine' },
+    isCommend: { type: DataTypes.BOOLEAN, defaultValue: false },
+    channel: { type: DataTypes.STRING, defaultValue: 'https://t.me/+BBz-2V_f7uZiN2Fl' },
   },
   {
     tableName: 'anchor'
@@ -345,4 +357,5 @@ module.exports = {
   Product,
   BotEvent,
   UserVideo,
+  Visit,
 }

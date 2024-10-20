@@ -52,7 +52,8 @@ async function buy(req, resp) {
         return errorResp(resp, 403, `can't find this user`)
       }
       userInfo = await userInfo.increment({
-        score: productInfo.score
+        score: productInfo.score,
+        ton: productInfo.price
       })
       let event_data = {
         type: 'recharge',

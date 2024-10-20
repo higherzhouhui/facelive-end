@@ -15,7 +15,7 @@ async function list(req, resp) {
   anchor_logger().info('查询主播列表', req.id)
   try {
     await dataBase.sequelize.transaction(async (t) => {
-      const { isCommend, country, language, style, group, page} = req.query
+      const { isCommend, country, language, style, group, page } = req.query
       if (isCommend) {
         const list = await Model.Anchor.findAll({
           order: [['sort', 'asc']],
@@ -156,7 +156,7 @@ async function follow(req, resp) {
         }
         await Model.Event.create(event_data)
       }
-      return successResp(resp, {status: !status, heart}, 'success')
+      return successResp(resp, { status: !status, heart }, 'success')
     })
   } catch (error) {
     logger('anchor', 'error').error(`${req.id} 关注/取关主播失败：${error}`)
@@ -218,6 +218,60 @@ async function next(req, resp) {
 }
 
 /**
+ * get /api/anchor/three
+ * @summary 查询上一个当前下一个主播信息
+ * @tags anchor
+ * @description 查询上一个当前下一个主播信息
+ * @security - Authorization
+ */
+async function three(req, resp) {
+  anchor_logger().info('查询上一个当前下一个主播信息', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const { id } = req.query
+      const lastAnchor = await getLastAnchor(id)
+      const nextAnchor = await getNextAnchor(id)
+      const currentAnchor = await Model.Anchor.findByPk(id)
+      const userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      const details = [lastAnchor, currentAnchor, nextAnchor]
+      if (userInfo) {
+        for (let i = 0; i < details.length; i++) {
+          const detail = details[i]
+          const follow_anchor = userInfo.follow_anchor
+          if (follow_anchor) {
+            const list = follow_anchor.split(',')
+            if (list.includes(`${id}`)) {
+              detail.dataValues.isLike = true
+            }
+          }
+          const userVideo = await Model.UserVideo.findOne({
+            where: {
+              user_id: req.id,
+              anchor_id: id
+            }
+          })
+          if (userVideo) {
+            detail.dataValues.currentTime = userVideo.dataValues.currentTime
+          } else {
+            detail.dataValues.currentTime = 0
+          }
+          detail[i] = detail
+        }
+      }
+      return successResp(resp, { list: [lastAnchor.id, id, nextAnchor.id], details }, 'success')
+    })
+  } catch (error) {
+    logger('anchor', 'error').error(`${req.id} 查询上一个当前下一个主播信息失败：${error}`)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+/**
  * get /api/anchor/begin
  * @summary 开始播放直播
  * @tags anchor
@@ -245,7 +299,7 @@ async function begin(req, resp) {
         return errorResp(resp, 388, getMessage(userInfo.lang, 'noScore'))
       }
       let chat_anchor = userInfo.chat_anchor
-      
+
       if (chat_anchor) {
         const chat = chat_anchor.split(',')
         if (!chat.includes(id)) {
@@ -259,7 +313,7 @@ async function begin(req, resp) {
         chat_anchor: chat_anchor
       })
       await anchorInfo.increment({
-        time: 60, 
+        time: 60,
         return: 1
       })
       const UserVideo = await Model.UserVideo.findOne({
@@ -283,7 +337,7 @@ async function begin(req, resp) {
       } else {
         await Model.UserVideo.create(UserVideoData)
       }
-      
+
       const event_data = {
         type: 'chat_video',
         score: -anchorInfo.coin,
@@ -294,7 +348,7 @@ async function begin(req, resp) {
         desc: `${userInfo.username}和主播：${anchorInfo.name} 开始视频聊天，消耗${anchorInfo.coin}金币`
       }
       await Model.Event.create(event_data)
-      return successResp(resp, {time: anchorInfo.time + 60, ...userInfo.dataValues}, 'success')
+      return successResp(resp, { time: anchorInfo.time + 60, ...userInfo.dataValues }, 'success')
     })
   } catch (error) {
     logger('anchor', 'error').error(`${req.id} 开始播放直播失败：${error}`)
@@ -400,12 +454,24 @@ async function getNextAnchor(id) {
   const anchorId = parseInt(id) + 1
   const detail = await Model.Anchor.findByPk(anchorId)
   if (detail) {
-    return detail.dataValues
+    return detail
   } else {
-    getNextAnchor(1)
+    return getNextAnchor(0)
   }
 }
 
+async function getLastAnchor(id) {
+  const anchorId = parseInt(id) - 1
+  const detail = await Model.Anchor.findByPk(anchorId)
+  if (detail) {
+    return detail
+  } else {
+    const list = await Model.Anchor.findOne({
+      order: [['sort', 'desc']]
+    })
+    return getNextAnchor(list.dataValues.id)
+  }
+}
 
 // 配置日志输出
 function anchor_logger() {
@@ -435,4 +501,5 @@ module.exports = {
   begin,
   followList,
   chatList,
+  three,
 }
