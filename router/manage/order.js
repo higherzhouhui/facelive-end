@@ -63,7 +63,7 @@ async function getList(req, resp) {
         type: 'recharge'
       }
     })
-    return successResp(resp, { ...countAll, ton: ton ||  }, 'success')
+    return successResp(resp, { ...countAll, ton: ton ||  0}, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
