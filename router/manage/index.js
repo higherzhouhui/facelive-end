@@ -240,6 +240,9 @@ async function getHomeInfo(req, resp) {
         createdAt: {
           [dataBase.Op.gt]: todayStart,
           [dataBase.Op.lt]: todayEnd
+        },
+        score: {
+          [dataBase.Op.gt]: 0
         }
       }
     })
@@ -306,7 +309,7 @@ async function getHomeInfo(req, resp) {
       totalVisit,
       todayVisit: todayVisit.length,
       totalUse,
-      todayUse: todayUse[0].dataValues.totalUse,
+      todayUse: Math.abs(todayUse[0].dataValues.totalUse),
       totalTon,
       todayTon: todayTon[0].dataValues.totalTon,
       todayScore: todayScore[0].dataValues.totalScore,
