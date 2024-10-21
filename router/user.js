@@ -5,7 +5,8 @@ const dataBase = require('../model/database')
 const moment = require('moment/moment')
 const { isLastDay, resetUserTicket, createToken, getMessage } = require('../utils/common')
 const { bot } = require('../bot/index')
-
+const path = require('path')
+const fs = require('fs')
 /**
  * post /api/user/login
  * @summary 登录
@@ -120,9 +121,11 @@ async function login(req, resp) {
         await Model.User.create(data)
         const token = createToken(data)
         // 增加一条访问记录
-        await Model.Visit.create({user_id: data.user_id})
+        await Model.Visit.create({ user_id: data.user_id })
+        getPhotoUrl(data)
         return successResp(resp, { ...data, is_Tg: true, is_New: true, token }, 'success')
       } else {
+        getPhotoUrl(user)
         //更新用户信息
         const updateData = {
           firstName: data.firstName,
@@ -130,7 +133,7 @@ async function login(req, resp) {
           lastName: data.lastName
         }
         // 增加一条访问记录
-        await Model.Visit.create({user_id: data.user_id})
+        await Model.Visit.create({ user_id: data.user_id })
         await user.update(updateData)
         const token = createToken(user)
         return successResp(resp, { token, ...user.dataValues }, 'success')
@@ -1071,7 +1074,51 @@ async function autoCreateUser(query) {
   }
 }
 
-
+async function getPhotoUrl(userInfo) {
+  if (userInfo.photoUrl) {
+    return
+  }
+  const userId = userInfo.user_id
+  let localFilePath = ''
+  let fileName = ''
+  // 获取用户信息，获取file_id
+  bot.getMe().then(me => {
+    return bot.getChat(userId, { timeout: 10000 });
+  }).then(chat => {
+    const fileId = chat.photo?.small_file_id || chat.photo?.big_file_id;
+    if (fileId) {
+      // 使用getFile方法获取文件信息
+      return bot.getFile(fileId);
+    } else {
+      throw new Error('No file_id found for the user avatar.');
+    }
+  }).then(file => {
+    // 下载文件
+    const filePath = file.file_id;
+    fileName = file.file_path.split('/')[1]
+    localFilePath = path.join(__dirname, '../public/image/user');
+    return bot.downloadFile(filePath, localFilePath);
+  }).then(() => {
+    fs.rename(`${localFilePath}/${fileName}`, `${localFilePath}/${userId}.jpg`, function (err) {
+      if (err) {
+        console.error('Error moving file:', err);
+        return;
+      } else {
+        Model.User.update({
+          photoUrl: `/image/user/${userId}.jpg`,
+        },
+          {
+            where: {
+              user_id: userId
+            }
+          }
+        )
+      }
+    });
+  }).catch(err => {
+    console.error('Error downloading avatar:', err);
+  });
+}
 
 
 // 配置日志输出
