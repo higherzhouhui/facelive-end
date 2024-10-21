@@ -71,6 +71,8 @@ const manageStyle = require('./manage/style.js')
 const manageGroup = require('./manage/group.js')
 const manageOrder = require('./manage/order.js')
 const manageConsumption = require('./manage/consumption.js')
+const manageFollow = require('./manage/follow.js')
+const manageChat = require('./manage/chat.js')
 
 router.post('/dogAdmin/login', manage.login)
 router.get('/dogAdmin/userInfo', manage.userInfo)
@@ -110,6 +112,8 @@ router.get('/dogAdmin/consumption/list', manageConsumption.getList)
 router.post('/dogAdmin/consumption/update', manageConsumption.updateInfo)
 router.post('/dogAdmin/consumption/remove', manageConsumption.removeRecord)
 
+router.get('/dogAdmin/follow/list', manageFollow.getList)
+router.get('/dogAdmin/chat/list', manageChat.getList)
 
 router.get('/dogAdmin/getPropsList', manage.getPropsList)
 router.post('/dogAdmin/props/update', manage.updatePropsInfo)

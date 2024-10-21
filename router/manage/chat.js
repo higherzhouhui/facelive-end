@@ -19,42 +19,31 @@ async function getList(req, resp) {
   manager_logger().info('View anchor list')
   try {
     const data = req.query
-    let where = {
-      type: 'chat_video'
-    }
-    if (data.from_user) {
-      where.from_user = {
-        [dataBase.Op.like]: `%${data.from_user}%`
+    const userInfo = await Model.User.findOne({
+      where: {
+        user_id: data.user_id
       }
-    }
-    if (data.from_username) {
-      where.from_username = {
-        [dataBase.Op.like]: `%${data.from_username}%`
-      }
-    }
-
-    if (data.to_user) {
-      where.to_user = {
-        [dataBase.Op.like]: `%${data.to_user}%`
-      }
-    }
-    if (data.to_username) {
-      where.to_username = {
-        [dataBase.Op.like]: `%${data.to_username}%`
-      }
-    }
- 
-    const countAll = await Model.Event.findAndCountAll({
-      order: [['createdAt', 'desc']],
-      where,
-      offset: (data.pageNum - 1) * data.pageSize,
-      limit: parseInt(data.pageSize),
     })
-    const total = await Model.Event.sum('score', {
-      where
-    })
-  
-    return successResp(resp, { ...countAll, total }, 'success')
+    let list = []
+    if (userInfo) {
+      const chat_anchor = userInfo.chat_anchor
+      if (chat_anchor) {
+        let follow_list = chat_anchor.split(',')
+        if (follow_list.length) {
+          follow_list = follow_list.filter(item => {
+            return !isNaN(item)
+          })
+          list = await Model.Anchor.findAndCountAll({
+            where: {
+              id: {
+                [dataBase.Op.in]: follow_list
+              }
+            }
+          })
+        }
+      }
+    }
+    return successResp(resp, list, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
@@ -67,13 +56,13 @@ async function updateInfo(req, resp) {
   try {
     const data = req.body
     if (data.id) {
-      await Model.Event.update(data, {
+      await Model.Anchor.update(data, {
         where: {
           id: data.id
         }
       })
     } else {
-      await Model.Event.create({
+      await Model.Anchor.create({
         ...data,
         label: data.code,
       })
@@ -90,7 +79,7 @@ async function removeRecord(req, resp) {
   manager_logger().info('Update member information')
   try {
     const data = req.body
-    await Model.Event.destroy(
+    await Model.Anchor.destroy(
       {
         where: {
           id: data.id

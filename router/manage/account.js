@@ -74,26 +74,45 @@ async function getUserList(req, resp) {
 
 /**
  * 
- * View subordinate member list
+ * View subordinate sub list
  */
 async function getUserInviteList(req, resp) {
-  manager_logger().info('View homepage information')
+  manager_logger().info('View sub list')
   try {
     const data = req.query
-    const where = {}
-    if (data.id) {
-      where.invite_id = data.id
+    let where = {}
+    if (data.user_id) {
+      where.startParam = {
+        [dataBase.Op.like]: `%${data.user_id}%`
+      }
     }
-    const list = await Model.User.findAndCountAll({
+  
+    const countAll = await Model.User.findAndCountAll({
       order: [['createdAt', 'desc']],
       where,
+      offset: (data.pageNum - 1) * data.pageSize,
+      limit: parseInt(data.pageSize),
     })
-    const total = await Model.User.count()
-    return successResp(resp, { ...list, total }, 'Successful!')
+    const list = JSON.parse(JSON.stringify(countAll))
+    for (let i = 0; i < list.rows.length; i++) {
+      const subUser = await Model.User.count({
+        where: {
+          startParam: list.rows[i].user_id
+        }
+      })
+      list.rows[i].subUser = subUser
+    }
+
+    const total_use = await Model.User.sum('use_ton', {
+      where: {
+        startParam: data.user_id
+      }
+    });
+    return successResp(resp, { total_use: total_use || 0, ...list}, 'success')
   } catch (error) {
-    manager_logger().info('Failed to view homepage information', error)
+    manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
-    return errorResp(resp, `${error}`)
+    return errorResp(resp, 400, `${error}`)
   }
 }
 

@@ -164,7 +164,7 @@ async function getHomeInfo(req, resp) {
   manager_logger().info('View homepage information')
   try {
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0); // Set today's start time
+    todayStart.setHours(8, 0, 0, 0); // Set today's start time
     const todayEnd = new Date(todayStart);
     todayEnd.setDate(todayEnd.getDate() + 1); // Set today's end time
 
@@ -183,7 +183,54 @@ async function getHomeInfo(req, resp) {
         }
       }
     })
+    const totalVisit = await Model.Visit.count()
+    const totalTon = await Model.Event.sum('price', {
+      where: {
+        type: 'recharge'
+      }
+    })
+    const totalUse = await Model.Event.sum('score', {
+      where: {
+        type: 'chat_video'
+      }
+    })
 
+    const todayVisit = await Model.Visit.findAll({
+      where: {
+        createdAt: {
+          [dataBase.Op.gt]: todayStart,
+          [dataBase.Op.lt]: todayEnd
+        }
+      }
+    })
+
+    const todayTon = await Model.Event.findAll({
+      attributes: [
+        'createdAt',
+        [dataBase.sequelize.literal('SUM(price)'), 'totalTon']
+      ],
+      where: {
+        createdAt: {
+          [dataBase.Op.gt]: todayStart,
+          [dataBase.Op.lt]: todayEnd
+        },
+        type: 'recharge'
+      }
+    })
+
+    const todayUse = await Model.Event.findAll({
+      attributes: [
+        'createdAt',
+        [dataBase.sequelize.literal('SUM(score)'), 'totalUse']
+      ],
+      where: {
+        createdAt: {
+          [dataBase.Op.gt]: todayStart,
+          [dataBase.Op.lt]: todayEnd
+        },
+        type: 'chat_video'
+      }
+    })
     const todayScore = await Model.Event.findAll({
       attributes: [
         'createdAt',
@@ -197,25 +244,9 @@ async function getHomeInfo(req, resp) {
       }
     })
 
-    const todayGameScore = await Model.Event.findAll({
-      attributes: [
-        'createdAt',
-        [dataBase.sequelize.literal('SUM(score)'), 'totalScore']
-      ],
-      where: {
-        createdAt: {
-          [dataBase.Op.gt]: todayStart,
-          [dataBase.Op.lt]: todayEnd
-        },
-        type: ['play_game_reward', 'play_game_reward_parent']
-      }
-    })
+ 
 
-    const todayCheckIn = await Model.User.count({
-      where: {
-        check_date: moment().format('MM-DD')
-      }
-    })
+   
     // Get the date from **n** days ago
     const startDate = new Date()
     startDate.setHours(23, 59, 59, 0); // Set today's end time
@@ -233,12 +264,12 @@ async function getHomeInfo(req, resp) {
         })
       }
       let sql = ''
-      if (table == 'user') {
+      if (table == 'user' || table == 'visit') {
         sql = `
-        SELECT DATE(createdAt) as date, COUNT(*) as num from user WHERE createdAt >= :endDate AND createdAt <= :startDate GROUP BY date;`;
+        SELECT DATE(createdAt) as date, COUNT(*) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate GROUP BY date;`;
       } else {
         sql = `
-         SELECT DATE(createdAt) as date, sum(score) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate ${type ? `AND type='${type}'` : ''} GROUP BY date;`;
+         SELECT DATE(createdAt) as date, sum(${type == 'recharge' ? 'price' : 'score'}) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate ${type ? `AND type='${type}'` : ''} GROUP BY date;`;
       }
       const startDate = new Date()
       const endDate = new Date(todayStart);
@@ -262,18 +293,27 @@ async function getHomeInfo(req, resp) {
 
 
     const userList = await getList(req.query.day, 'user', '');
+    const visitList = await getList(req.query.day, 'visit', '');
     const scoreList = await getList(req.query.day, 'event', '');
+    const rechargeList = await getList(req.query.day, 'event', 'recharge');
+
 
     let resData = {
       totalScore,
       totalUser,
       totalHuiYuan,
       todayRegister,
-      todayCheckIn,
+      totalVisit,
+      todayVisit: todayVisit.length,
+      totalUse,
+      todayUse: todayUse[0].dataValues.totalUse,
+      totalTon,
+      todayTon: todayTon[0].dataValues.totalTon,
       todayScore: todayScore[0].dataValues.totalScore,
-      todayGameScore: todayGameScore[0].dataValues.totalScore,
+      rechargeList,
       userList,
       scoreList,
+      visitList,
     }
 
     function handleNumber(obj) {

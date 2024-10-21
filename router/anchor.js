@@ -431,6 +431,7 @@ async function followList(req, resp) {
       })
       let list = []
       if (userInfo) {
+        let user_follow_anchor = ''
         const follow_anchor = userInfo.follow_anchor
         if (follow_anchor) {
           let follow_list = follow_anchor.split(',')
@@ -446,8 +447,14 @@ async function followList(req, resp) {
                 }
               }
             })
+            list.forEach(lItem => {
+              user_follow_anchor += `${lItem.id},`
+            })
           }
         }
+        await userInfo.update({
+          follow_anchor: user_follow_anchor
+        })
       }
       return successResp(resp, list, 'success')
     })
@@ -477,6 +484,7 @@ async function chatList(req, resp) {
       })
       let list = []
       if (userInfo) {
+        let user_chat_anchor = ''
         const t_chat_anchor = userInfo.chat_anchor
         if (t_chat_anchor) {
           let chat_anchor = t_chat_anchor.split(',')
@@ -492,8 +500,14 @@ async function chatList(req, resp) {
                 }
               }
             })
+            list.forEach(lItem => {
+              user_chat_anchor += `${lItem.id},`
+            })
           }
         }
+        await userInfo.update({
+          chat_anchor: user_chat_anchor
+        })
       }
       return successResp(resp, list, 'success')
     })
