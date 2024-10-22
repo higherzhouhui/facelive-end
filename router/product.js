@@ -65,6 +65,7 @@ async function buy(req, resp) {
         price: productInfo.price,
         from_address,
         to_address,
+        desc: `${userInfo.username} 充值了 ${productInfo.price} TON 获得了 ${productInfo.score} Coins`,
       }
       await Model.Event.create(event_data)
       // 机器人推送充值消息
@@ -106,6 +107,7 @@ async function buy(req, resp) {
             to_username: parentUserInfo.username,
             score: increment_score,
             price: 0,
+            desc: `${userInfo.username}充值返利${increment_score}Coins`,
           }
           await Model.Event.create(event_data)
           // 机器人推送奖励消息

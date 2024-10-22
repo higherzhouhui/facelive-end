@@ -34,7 +34,9 @@ async function getUserList(req, resp) {
         [dataBase.Op.like]: `%${data.user_id}%`
       }
     }
-
+    if (data.isPremium) {
+      where.isPremium = data.isPremium == 'true' ? true : false
+    }
     if (data.startParam) {
       where.startParam = {
         [dataBase.Op.like]: `%${data.startParam}%`

@@ -203,6 +203,23 @@ const Product = db.sequelize.define(
   }
 )
 
+/** 公告  */
+const Notice = db.sequelize.define(
+  'notice',
+  {
+    cover: { type: DataTypes.STRING },
+    send_time: { type: DataTypes.STRING },
+    content: { type: DataTypes.STRING },
+    btn1: { type: DataTypes.STRING },
+    btn1_url: { type: DataTypes.STRING },
+    btn2: { type: DataTypes.STRING },
+    btn2_url: { type: DataTypes.STRING },
+  },
+  {
+    tableName: 'notice'
+  }
+)
+
 /** 语言  */
 const Language = db.sequelize.define(
   'language',
@@ -358,4 +375,5 @@ module.exports = {
   BotEvent,
   UserVideo,
   Visit,
+  Notice,
 }

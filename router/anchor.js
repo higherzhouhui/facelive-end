@@ -156,7 +156,7 @@ async function follow(req, resp) {
           to_user: detail.id,
           to_username: detail.name,
           score: 0,
-          desc: `${userInfo.username} is ${!status ? 'follow' : 'unFollow'} ${detail.name}`
+          desc: `${userInfo.username} ${!status ? '关注了' : '取关了'} ${detail.name}`
         }
         await Model.Event.create(event_data)
       }
@@ -404,7 +404,7 @@ async function begin(req, resp) {
         from_username: userInfo.username,
         to_user: id,
         to_username: anchorInfo.name,
-        desc: `${userInfo.username}和主播：${anchorInfo.name} 开始视频聊天，消耗${anchorInfo.coin}金币`
+        desc: `${userInfo.username}和主播${anchorInfo.name} 视频聊天，消耗${anchorInfo.coin} Coins`
       }
       await Model.Event.create(event_data)
       return successResp(resp, { time: anchorInfo.time + 60, ...userInfo.dataValues }, 'success')

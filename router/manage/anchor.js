@@ -30,6 +30,9 @@ async function getList(req, resp) {
         [dataBase.Op.like]: `%${data.id}%`
       }
     }
+    if (data.isCommend) {
+      where.isCommend = data.isCommend == 'true' ? true : false
+    }
     if (data.group) {
       where.group = {
         [dataBase.Op.like]: `%${data.group}%`

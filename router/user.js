@@ -54,7 +54,7 @@ async function login(req, resp) {
           score: data.score,
           from_username: data.username,
           to_username: data.username,
-          desc: `${data.username}  join us!`
+          desc: `${data.username} 注册了账号`
         }
         await Model.Event.create(event_data)
 
@@ -84,7 +84,7 @@ async function login(req, resp) {
                   score: increment_score,
                   from_username: data.username,
                   to_username: parentUser.username,
-                  desc: `${parentUser.username} invite ${data.username} join us!`
+                  desc: `${parentUser.username} 邀请 ${data.username} 注册`
                 }
                 await Model.Event.create(event_data)
 
