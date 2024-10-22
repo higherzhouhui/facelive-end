@@ -285,13 +285,13 @@ async function more(req, resp) {
       const { id } = req.query
       const nextAnchor1 = await getNextAnchor(id)
       const nextAnchor2 = await getNextAnchor(nextAnchor1.id)
-      const currentAnchor = await Model.Anchor.findByPk(id)
+      const nextAnchor3 = await getNextAnchor(nextAnchor2.id)
       const userInfo = await Model.User.findOne({
         where: {
           user_id: req.id
         }
       })
-      const details = [nextAnchor1, nextAnchor2]
+      const details = [nextAnchor1, nextAnchor2, nextAnchor3]
       if (userInfo) {
         for (let i = 0; i < details.length; i++) {
           const detail = details[i]
