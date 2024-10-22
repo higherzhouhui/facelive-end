@@ -15,10 +15,13 @@ async function list(req, resp) {
   anchor_logger().info('查询主播列表', req.id)
   try {
     await dataBase.sequelize.transaction(async (t) => {
+      const orderList = [['sort', 'asc'], ['sort', 'desc'], ['createdAt', 'asc'], ['createdAt', 'desc'], ['updatedAt', 'asc'], ['updatedAt', 'desc']]
+      const order = orderList[Math.floor(Math.random() * 6)]
       const { isCommend, country, language, style, group, page } = req.query
       if (isCommend) {
         const list = await Model.Anchor.findAll({
-          order: [['sort', 'asc']],
+          order: [order],
+          attributes: ['name', 'avatar', 'country', 'id'],
           where: {
             isCommend: true
           }
@@ -43,7 +46,8 @@ async function list(req, resp) {
           where.group = _list
         }
         const list = await Model.Anchor.findAll({
-          order: [['sort', 'asc']],
+          order: [order],
+          attributes: ['name', 'cover', 'country', 'id'],
           where: where,
           limit: 15,
           offset: page,
