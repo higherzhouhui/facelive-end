@@ -16,7 +16,7 @@ async function list(req, resp) {
   try {
     await dataBase.sequelize.transaction(async (t) => {
       const orderList = [['sort', 'asc'], ['sort', 'desc'], ['createdAt', 'asc'], ['createdAt', 'desc'], ['updatedAt', 'asc'], ['updatedAt', 'desc']]
-      const order = orderList[Math.floor(Math.random() * 6)]
+      const order = orderList[1]
       const { isCommend, country, language, style, group, page } = req.query
       if (isCommend) {
         const list = await Model.Anchor.findAll({

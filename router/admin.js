@@ -64,7 +64,7 @@ async function init_groupList() {
         label: 'all',
         code: 'all',
         zh: '全部',
-        sort: 0,
+        sort: 1000,
         selected: true,
       },
       {
@@ -72,14 +72,14 @@ async function init_groupList() {
         code: 'free',
         zh: '免费',
         en: 'Free',
-        sort: 5,
+        sort: 10,
       },
       {
         label: 'paid',
         code: 'paid',
         en: 'Paid',
         zh: '付费',
-        sort: 10,
+        sort: 5,
       },
     ]
     data.forEach(async item => {
@@ -98,13 +98,13 @@ async function init_systemLanguageList() {
         label: 'English',
         code: 'en',
         zh: '英语',
-        sort: 5,
+        sort: 10,
       },
       {
         label: '中文',
         code: 'zh',
         zh: '中文',
-        sort: 10,
+        sort: 5,
       },
     ]
     data.forEach(async item => {
@@ -149,7 +149,7 @@ async function init_styleList() {
         label: 'all',
         code: 'all',
         zh: '全部',
-        sort: 0,
+        sort: 100,
         selected: true,
       },
       {
@@ -157,7 +157,7 @@ async function init_styleList() {
         code: 'hot',
         zh: '热门聊天🔞',
         en: 'Hot Chat 🔞',
-        sort: 5,
+        sort: 50,
       },
       {
         label: 'cc',
@@ -182,7 +182,7 @@ async function init_languageList() {
         label: 'all',
         code: 'all',
         zh: '全部',
-        sort: 0,
+        sort: 100,
         selected: true,
       },
       {
@@ -190,42 +190,42 @@ async function init_languageList() {
         code: 'en',
         zh: '英语',
         en: 'English',
-        sort: 5,
+        sort: 100,
       },
       {
         label: 'yny',
         code: 've',
         zh: '越南语',
         en: 'Vietnamese',
-        sort: 10,
+        sort: 90,
       },
       {
         label: 'ta',
         code: 'ta',
         zh: '他加禄语',
         en: 'Tagalog',
-        sort: 15,
+        sort: 80,
       },
       {
         label: 'fp',
         code: 'fp',
         en: 'Filipino',
         zh: '菲律宾语',
-        sort: 20,
+        sort: 70,
       },
       {
         label: 'pg',
         code: 'pg',
         zh: '葡萄牙语',
         en: 'Portuguese',
-        sort: 25,
+        sort: 60,
       },
       {
         label: 'zh',
         code: 'zh',
         zh: '中文',
         en: 'Chinese',
-        sort: 30,
+        sort: 50,
       },
     ]
     data.forEach(async item => {
@@ -244,7 +244,7 @@ async function init_countryList() {
         label: 'all',
         code: 'all',
         zh: '全部',
-        sort: 0,
+        sort: 200,
         selected: true,
       },
       {
@@ -253,7 +253,7 @@ async function init_countryList() {
         code: 'ph',
         zh: '菲律宾',
         en: 'Philippines',
-        sort: 5,
+        sort: 190,
       },
       {
         flag: '🇳🇬',
@@ -261,7 +261,7 @@ async function init_countryList() {
         zh: '尼日利亚',
         en: 'Nigeria',
         code: 'ng',
-        sort: 10,
+        sort: 180,
       },
       {
         flag: '🇻🇳',
@@ -269,7 +269,7 @@ async function init_countryList() {
         zh: '越南',
         en: 'Vietnam',
         code: 'vn',
-        sort: 15,
+        sort: 170,
       },
       {
         flag: '🇧🇷',
@@ -277,7 +277,7 @@ async function init_countryList() {
         zh: '巴西',
         en: 'Brazil',
         code: 'br',
-        sort: 25,
+        sort: 160,
       },
       {
         flag: '🇨🇴',
@@ -285,7 +285,7 @@ async function init_countryList() {
         zh: '哥伦比亚',
         en: 'Colombia',
         code: 'co',
-        sort: 30,
+        sort: 150,
       },
       {
         flag: '🇺🇸',
@@ -293,7 +293,7 @@ async function init_countryList() {
         zh: '美国',
         code: 'us',
         en: 'United States',
-        sort: 35,
+        sort: 140,
       },
       {
         flag: '🇨🇦',
@@ -301,7 +301,7 @@ async function init_countryList() {
         zh: '加拿大',
         en: 'Canada',
         code: 'ca',
-        sort: 20,
+        sort: 130,
       },
       {
         flag: '🇬🇭',
@@ -309,7 +309,7 @@ async function init_countryList() {
         zh: '加纳',
         code: 'gh',
         en: 'Ghana',
-        sort: 40,
+        sort: 120,
       },
       {
         flag: '🇨🇳',
@@ -317,7 +317,7 @@ async function init_countryList() {
         zh: '中国',
         en: 'China',
         code: 'cn',
-        sort: 45,
+        sort: 110,
       },
       {
         flag: '🇻🇪',
@@ -325,7 +325,7 @@ async function init_countryList() {
         zh: '委内瑞拉',
         en: 'Venezuela',
         code: 've',
-        sort: 50,
+        sort: 100,
       },
       {
         flag: '🇮🇳',
@@ -333,7 +333,7 @@ async function init_countryList() {
         zh: '印度',
         en: 'India',
         code: 'in',
-        sort: 55,
+        sort: 90,
       },
       {
         flag: '🇬🇧',
@@ -341,7 +341,7 @@ async function init_countryList() {
         zh: '英国',
         en: 'britain',
         code: 'gb',
-        sort: 60,
+        sort: 80,
       },
       {
         flag: '🇸🇾',
@@ -349,7 +349,7 @@ async function init_countryList() {
         en: 'Syria',
         code: 'dy',
         zh: '叙利亚',
-        sort: 65,
+        sort: 70,
       },
       {
         flag: '🇧🇩',
@@ -357,7 +357,7 @@ async function init_countryList() {
         zh: '孟加拉国',
         en: 'Bangladesh',
         code: 'bd',
-        sort: 70,
+        sort: 60,
       },
       {
         flag: '🇯🇲',
@@ -365,7 +365,7 @@ async function init_countryList() {
         en: 'Jamaica',
         zh: '牙买加',
         code: 'jm',
-        sort: 75,
+        sort: 50,
       }
     ]
     data.forEach(async item => {

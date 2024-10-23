@@ -480,19 +480,19 @@ async function getAllConfig(req, resp) {
   try {
     const base = await Model.Config.findOne()
     const country = await Model.Country.findAll({
-      order: [['sort', 'asc']]
+      order: [['sort', 'desc']]
     })
     const language = await Model.Language.findAll({
-      order: [['sort', 'asc']]
+      order: [['sort', 'desc']]
     })
     const style = await Model.Style.findAll({
-      order: [['sort', 'asc']]
+      order: [['sort', 'desc']]
     })
     const group = await Model.Group.findAll({
-      order: [['sort', 'asc']]
+      order: [['sort', 'desc']]
     })
     const systemLanguage = await Model.SystemLanguage.findAll({
-      order: [['sort', 'asc']]
+      order: [['sort', 'desc']]
     })
     return successResp(resp, { base, country, language, style, group, systemLanguage })
   } catch (error) {

@@ -30,7 +30,7 @@ async function getList(req, resp) {
       }
     }
     const countAll = await Model.Country.findAndCountAll({
-      order: [['sort', 'asc']],
+      order: [['sort', 'desc']],
       where,
       offset: (data.pageNum - 1) * data.pageSize,
       limit: parseInt(data.pageSize),

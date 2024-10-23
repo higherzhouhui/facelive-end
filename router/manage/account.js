@@ -66,7 +66,7 @@ async function getUserList(req, resp) {
     }
 
     const total_use = await Model.User.sum('use_ton');
-    return successResp(resp, { total_use, ...list}, 'success')
+    return successResp(resp, { total_use: total_use || 0, ...list}, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)

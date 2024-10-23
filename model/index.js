@@ -291,6 +291,7 @@ const Anchor = db.sequelize.define(
     coin: { type: DataTypes.INTEGER, defaultValue: 500 },
     video: { type: DataTypes.STRING },
     avatar: { type: DataTypes.STRING },
+    home_cover: { type: DataTypes.STRING },
     heart: { type: DataTypes.INTEGER, defaultValue: 5000 },
     sort: { type: DataTypes.INTEGER, defaultValue: 0 },
     star: { type: DataTypes.INTEGER, defaultValue: 5 },
