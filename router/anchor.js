@@ -21,7 +21,7 @@ async function list(req, resp) {
       if (isCommend) {
         const list = await Model.Anchor.findAll({
           order: [order],
-          attributes: ['name', 'avatar', 'country', 'id'],
+          attributes: ['name', 'home_cover', 'country', 'id'],
           where: {
             isCommend: true
           }
@@ -47,7 +47,7 @@ async function list(req, resp) {
         }
         const list = await Model.Anchor.findAll({
           order: [order],
-          attributes: ['name', 'cover', 'country', 'id'],
+          attributes: ['name', 'home_cover', 'country', 'id'],
           where: where,
           limit: 15,
           offset: page,
