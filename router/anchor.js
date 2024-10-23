@@ -525,7 +525,10 @@ async function chatList(req, resp) {
 //----------------------------- private method --------------
 async function getNextAnchor(id) {
   const originAnchor = await Model.Anchor.findByPk(id)
-  const sort = originAnchor.sort || 0
+  let sort = 0
+  if (originAnchor) {
+    sort = originAnchor.sort
+  }
   const detail = await Model.Anchor.findOne({
     where: {
       sort: {
@@ -545,7 +548,10 @@ async function getLastAnchor(id) {
   const maxSort = await Model.Anchor.findOne({
     order: [['sort', 'desc']]
   })
-  const sort = originAnchor.sort || maxSort.sort
+  let sort = maxSort.sort
+  if (originAnchor) {
+    sort = originAnchor.sort
+  }
   const detail = await Model.Anchor.findOne({
     order: [['updatedAt', 'desc']],
     where: {
