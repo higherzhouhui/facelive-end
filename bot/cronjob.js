@@ -26,7 +26,7 @@ async function sendMessageToChannel() {
         ]
       }
     };
-    const source = utils.getLocalSource(`./public${anchorInfo.cover}`)
+    const source = utils.getLocalSource(`./public${anchorInfo.home_cover}`)
     bot.sendPhoto(config.channel_id, source, replyMarkup)
   } catch (error) {
     bot_logger().error(`sendMessageToChannel Error: ${error}`)
