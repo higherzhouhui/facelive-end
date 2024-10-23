@@ -55,6 +55,7 @@ async function getList(req, resp) {
     }
 
     const countAll = await Model.Anchor.findAndCountAll({
+      order: [['updatedAt', 'desc']],
       where,
       offset: (data.pageNum - 1) * data.pageSize,
       limit: parseInt(data.pageSize),
