@@ -4,6 +4,7 @@ var log4js = require('log4js')
 const { errorResp, successResp } = require('../middleware/request')
 const dataBase = require('../model/database')
 const systemPath = require('path');
+const { exec } = require('child_process')
 
 const imagesDirectory = 'public';
 const imageDir = '/' + imagesDirectory + '/';
@@ -31,7 +32,6 @@ const storageDisk = multer.diskStorage({
 const fileSize = 1024 * 1024 * 100
 const upload = multer({ storage: storageDisk, limits: { fileSize: fileSize, files: 1 } })
 
-
 /**
  * post /api/dogAdmin/upload
  * @summary 上传文件
@@ -54,8 +54,24 @@ async function uploadFile(req, resp) {
           return;
         }
       });
-
-      return successResp(resp, { fileUrl: `/${type}/${path}/${uploadedFileName}` }, 'success')
+      let home_cover = ''
+      if (type == 'video') {
+        const inputPath = systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`)
+        const lastIndexOf = uploadedFileName.lastIndexOf(".");
+        //获取文件的后缀名 .jpg
+        const prefix = uploadedFileName.substring(0, lastIndexOf);
+        const cover = systemPath.join(__dirname, `${prefix}.jpg`)
+        home_cover = `/image/cover/${uploadedFileName}`
+        const cmd = `ffmpeg -i ${inputPath} -ss 00:00:01 -vframes 1 ${cover}`;
+        console.log(cmd)
+        exec(cmd, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`执行的错误: ${error}`);
+            return;
+          }
+        })
+      }
+      return successResp(resp, { fileUrl: `/${type}/${path}/${uploadedFileName}`, home_cover: home_cover }, 'success')
     })
   } catch (error) {
     file_logger().error('上传文件失败', error)
