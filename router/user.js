@@ -41,12 +41,7 @@ async function login(req, resp) {
         const config = await Model.Config.findOne()
         data.user_id = data.id
         // 初始化积分
-        if (data.isPremium) {
-          data.score = config.invite_hy
-        } else {
-          data.score = config.invite_normal
-        }
-
+        data.score = config.register
         const event_data = {
           type: 'Register',
           from_user: data.id,
