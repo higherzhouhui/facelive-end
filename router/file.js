@@ -55,13 +55,13 @@ async function uploadFile(req, resp) {
         }
       });
       let home_cover = ''
-      if (type == 'video') {
+      if (type == 'video' && path == 'anchor') {
         const inputPath = systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`)
         const lastIndexOf = uploadedFileName.lastIndexOf(".");
         //获取文件的后缀名 .jpg
         const prefix = uploadedFileName.substring(0, lastIndexOf);
         const cover = systemPath.join(__dirname, `../public/image/cover/${prefix}.jpg`)
-        home_cover = `/image/cover/${uploadedFileName}`
+        home_cover = `/image/cover/${prefix}.jpg`
         exec(`ffmpeg -i ${inputPath} -ss 00:00:01 -vframes 1 ${cover}`, (error, stdout, stderr) => {
           if (error) {
             console.error(`执行的错误: ${error}`);

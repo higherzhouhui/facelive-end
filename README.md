@@ -3,6 +3,8 @@
 ### Redis  >= 6
 ### Mysql >= 5.744
 
+### sudo apt-get install ffmpeg
+
 ## 连接数据库
 ## mysql -uroot -p
 

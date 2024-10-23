@@ -390,9 +390,10 @@ async function init_anchorList() {
       const data = {
         name: `${nameList[random1]}${i + 1}`,
         age: random1 + 18,
-        video: `/video/${random3}.mp4`,
-        cover: `/image/${random3}.png`,
+        home_cover: `/image/${random3}.png`,
         avatar: `/image/${random3}.png`,
+        video: `/video/${random3}.mp4`,
+        cover: `/video/${random3}.mp4`,
         style: Math.random() > 0.5 ? 'hot' : 'cc',
         group: Math.random() > 0.5 ? 'free' : 'paid',
         isCommend: Math.random() > 0.8 ? true : false,
