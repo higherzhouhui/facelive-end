@@ -60,11 +60,9 @@ async function uploadFile(req, resp) {
         const lastIndexOf = uploadedFileName.lastIndexOf(".");
         //获取文件的后缀名 .jpg
         const prefix = uploadedFileName.substring(0, lastIndexOf);
-        const cover = systemPath.join(__dirname, `${prefix}.jpg`)
+        const cover = systemPath.join(__dirname, `../public/image/cover/${prefix}.jpg`)
         home_cover = `/image/cover/${uploadedFileName}`
-        const cmd = `ffmpeg -i ${inputPath} -ss 00:00:01 -vframes 1 ${cover}`;
-        console.log(cmd)
-        exec(cmd, (error, stdout, stderr) => {
+        exec(`ffmpeg -i ${inputPath} -ss 00:00:01 -vframes 1 ${cover}`, (error, stdout, stderr) => {
           if (error) {
             console.error(`执行的错误: ${error}`);
             return;
