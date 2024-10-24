@@ -55,7 +55,7 @@ async function uploadFile(req, resp) {
         }
       });
       let home_cover = ''
-      if (type == 'video' && path == 'anchor') {
+      if (type == 'video' && path == 'cover') {
         const inputPath = systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`)
         const lastIndexOf = uploadedFileName.lastIndexOf(".");
         //获取文件的后缀名 .jpg
