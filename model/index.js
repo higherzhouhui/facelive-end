@@ -136,9 +136,9 @@ const Config = db.sequelize.define(
   'config',
   {
     channel_id: { type: DataTypes.STRING, defaultValue: config.CHANNEL_ID },
-    invite_hy: { type: DataTypes.INTEGER, defaultValue: 100000 },
-    invite_normal: { type: DataTypes.INTEGER, defaultValue: 20000 },
-    register: { type: DataTypes.INTEGER, defaultValue: 20000 },
+    invite_hy: { type: DataTypes.INTEGER, defaultValue: 1000 },
+    invite_normal: { type: DataTypes.INTEGER, defaultValue: 2000 },
+    register: { type: DataTypes.INTEGER, defaultValue: 0 },
     invite_friends_ratio: { type: DataTypes.DOUBLE, defaultValue: 10 },
     tg_link: { type: DataTypes.STRING, defaultValue: config.TG_LINK },
     bot_link: { type: DataTypes.STRING, defaultValue: config.BOT_LINK },
