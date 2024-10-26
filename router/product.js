@@ -53,7 +53,7 @@ async function buy(req, resp) {
       }
       userInfo = await userInfo.increment({
         score: productInfo.score,
-        ton: productInfo.price
+        use_ton: productInfo.price
       })
       let event_data = {
         type: 'recharge',
