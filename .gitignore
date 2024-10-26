@@ -8,5 +8,4 @@ package-lock.json
 yarn.lock
 dump.rdb
 logs/
-public/
 .DS_Store
