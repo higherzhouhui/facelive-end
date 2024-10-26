@@ -440,7 +440,7 @@ async function init_baseData() {
   await init_manager();
   await init_rewardList();
   await init_systemConfig();
-  await init_anchorList()
+  // await init_anchorList()
   await init_groupList()
   await init_styleList()
   await init_languageList()
