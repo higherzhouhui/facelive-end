@@ -77,12 +77,12 @@ async function startShow(msg) {
               switch_inline_query: `${share_text}\n${link}`
             },
           ],
-          [
-            {
-              text: await getMessage(chatId, 'joinChannel'),
-              url: config.channel_url,
-            }
-          ],
+          // [
+          //   {
+          //     text: await getMessage(chatId, 'joinChannel'),
+          //     url: config.channel_url,
+          //   }
+          // ],
         ]
       }
     };
