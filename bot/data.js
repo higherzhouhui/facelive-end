@@ -976,6 +976,9 @@ async function getMessageToChannel() {
   await dataBase.sequelize.transaction(async (t) => {
     try {
       const count = await Model.Anchor.count()
+      if (count == 0) {
+        return {}
+      }
       const anchorId = getRandomInt(0, count)
       const anchorInfo = await Model.Anchor.findByPk(anchorId)
       if (anchorId) {
