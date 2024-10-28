@@ -28,6 +28,42 @@ async function list(req, resp) {
 }
 
 /**
+ * post /api/product/sendOrder
+ * @summary 发送账单
+ * @tags product
+ * @description 发送账单
+ * @security - Authorization
+ */
+async function sendOrder(req, resp) {
+  product_logger().info('发送账单', req.id)
+  try {
+    await dataBase.sequelize.transaction(async (t) => {
+      const { id } = req.body
+      const userInfo = await Model.User.findOne({
+        where: {
+          user_id: req.id
+        }
+      })
+      const productInfo = await Model.Product.findByPk(id)
+      if (!productInfo) {
+        return errorResp(resp, 400, `can't find this product`)
+      }
+      const welcomeDesc = await getMessage(userInfo.lang, 'welcomeDesc')
+
+      const res = await bot.createInvoiceLink('Face Live', welcomeDesc, new Date().getTime(), process.env.TOKEN, 'XTR', [{label: 'Confirm and Pay', amount: productInfo.price}], {photo_url: 'https://www.facelive.top/assets/logo.png'})
+      return successResp(resp, {url: res}, 'success')
+    })
+
+  } catch (error) {
+    logger('product', 'error').error(`${req.id} 发送账单失败：${error}`)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+
+
+/**
  * post /api/product/buy
  * @summary 购买coins
  * @tags product
@@ -65,7 +101,7 @@ async function buy(req, resp) {
         price: productInfo.price,
         from_address,
         to_address,
-        desc: `${userInfo.username} 充值了 ${productInfo.price} TON 获得了 ${productInfo.score} Coins`,
+        desc: `${userInfo.username} 充值了 ${productInfo.price} Star 获得了 ${productInfo.score} Coins`,
       }
       await Model.Event.create(event_data)
       // 机器人推送充值消息
@@ -139,6 +175,8 @@ async function buy(req, resp) {
 }
 
 
+
+
 //----------------------------- private method --------------
 
 // 配置日志输出
@@ -164,4 +202,5 @@ function product_logger() {
 module.exports = {
   list,
   buy,
+  sendOrder,
 }

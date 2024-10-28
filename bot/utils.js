@@ -2,9 +2,7 @@ const operation = require('./data')
 const { bot, bot_logger } = require('./index')
 const fs = require('fs')
 
-const share_text = `Unleash your inner CEO!
-Make your way from the shaved hamster to the grandmaster CEO of the tier-1 crypto exchange.
-Buy upgrades, complete quests, invite friends and become the best`
+const share_text = ``
 
 async function codeToEnLabel(type, code) {
   try {
@@ -57,7 +55,6 @@ async function startShow(msg) {
     const welcome = await getMessage(chatId, 'welcome')
     const welcomeDesc = await getMessage(chatId, 'welcomeDesc')
     const subscribeChannel = await getMessage(chatId, 'subscribeChannel')
-    
     const source = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5_Eq-smr3FcMNo8S_MBmVAiBLgG-QF1awag&s';
     const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username} ${welcome}</b>\n\n${welcomeDesc}\n`;
     const replyMarkup = {
@@ -74,7 +71,7 @@ async function startShow(msg) {
           [
             {
               text: await getMessage(chatId, 'yqhqjb'),
-              switch_inline_query: `${share_text}\n${link}`
+              switch_inline_query: `${welcomeDesc}\n${link}`
             },
           ],
           // [

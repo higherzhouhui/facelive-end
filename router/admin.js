@@ -120,19 +120,19 @@ async function init_productList() {
     const data = [
       {
         score: 10000,
-        price: 0.0001
+        price: 1
       },
       {
         score: 30000,
-        price: 1.99
+        price: 20
       },
       {
         score: 80000,
-        price: 3.99
+        price: 50
       },
       {
         score: 200000,
-        price: 7.99
+        price: 100
       },
     ]
     data.forEach(async item => {

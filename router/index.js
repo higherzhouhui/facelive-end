@@ -45,7 +45,7 @@ router.get('/anchor/chatList', anchor.chatList)
 // 产品
 router.get('/product/list', product.list)
 router.post('/product/buy', product.buy)
-
+router.post('/product/sendOrder', product.sendOrder)
 
 router.get('/game/begin', game.begin)
 router.get('/game/record', game.record)

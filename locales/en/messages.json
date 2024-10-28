@@ -1,9 +1,15 @@
 {
-  "hi": "嗨",
-  "welcome": "欢迎！",
-  "welcomeDesc": "- 成千上万的女孩准备与你进行一对一视频聊天。每天都有新的女孩加入。💃🏻\n- 加入她们的私人群组，获取热辣的专属照片、视频和直播。📸\n- 探索隐藏的群组，发现更多等待你的免费18岁以上内容。🔞",
-  "inviteText": "💝 FaceLive 女孩",
-  "joinChannel": "加入社区",
-  "yqhqjb": "邀请好友获取Coins",
-  "subscribeChannel": "加入我们的群组获取更多资讯！"
+  "hi": "Hi",
+  "welcome": "Welcome!",
+  "welcomeDesc": "- Thousands of girls are ready to have one-on-one video chats with you. New girls join every day. 💃🏻\n-  Join their private group to get exclusive hot photos, videos, and live streams. 📸\n-  Explore hidden groups and discover more free content waiting for you aged 18 and above.🔞",
+  "inviteText": "💝 FaceLive Girl",
+  "joinChannel": "Join the community",
+  "yqhqjb": "Invite friends to get more Coins",
+  "subscribeChannel": "Join our group to get more information!",
+  "loginError": "Login format error, please log in again!",
+  "notUser": "The user was not found, please log in again!",
+  "noScore": "Your balance is insufficient",
+  "rechargeHint": "Your recharge has been credited to your account",
+  "rechargeParentHint": "Congratulations on receiving the friend recharge reward",
+  "inviteHint": "Congratulations on receiving the friend registration reward"
 }
