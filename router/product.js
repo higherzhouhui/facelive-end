@@ -48,10 +48,9 @@ async function sendOrder(req, resp) {
       if (!productInfo) {
         return errorResp(resp, 400, `can't find this product`)
       }
-      const welcomeDesc = await getMessage(userInfo.lang, 'welcomeDesc')
-
-      const res = await bot.createInvoiceLink('Face Live', welcomeDesc, '{}', '', 'XTR', [{label: 'Coins', amount: productInfo.price}], {photo_url: 'https://www.facelive.top/assets/mlogo.png'})
-      return successResp(resp, {url: res}, 'success')
+      const link = await bot.createInvoiceLink(`${productInfo.score} Coins`, 'description', new Date().getTime() + 1000000, '', 'XTR', [{ label: 'Coins', amount: productInfo.price }])
+      console.log(link, 11111111)
+      return successResp(resp, { url: link }, 'success')
     })
 
   } catch (error) {

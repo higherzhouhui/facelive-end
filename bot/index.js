@@ -5,7 +5,7 @@ const TOKEN = process.env.TOKEN;
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 
-bot_logger().info('6.BOT connection has establish successfully');
+bot_logger().info('0.BOT connection has establish successfully');
 
 function bot_logger() {
   log4js.configure({
