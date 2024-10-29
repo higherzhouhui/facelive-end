@@ -33,6 +33,7 @@ const User = db.sequelize.define(
     chat_anchor: { type: DataTypes.STRING },
     lang: { type: DataTypes.STRING },
     use_ton: { type: DataTypes.DOUBLE, defaultValue: 0 },
+    user_star: { type: DataTypes.INTEGER, defaultValue: 0 },
     // level: { type: DataTypes.INTEGER, defaultValue: 0 },
     // path: { type: DataTypes.STRING, defaultValue: '-' },
   },
@@ -144,6 +145,7 @@ const Config = db.sequelize.define(
     bot_link: { type: DataTypes.STRING, defaultValue: config.BOT_LINK },
     help_link: { type: DataTypes.STRING, defaultValue: config.HELP_LINK },
     channel_url: { type: DataTypes.STRING, defaultValue: config.CHANNEL_LINK },
+    ton_price: { type: DataTypes.DOUBLE, defaultValue: 5 },
   },
   {
     tableName: 'config'
@@ -156,12 +158,12 @@ const Event = db.sequelize.define(
   'event',
   {
     type: { type: DataTypes.STRING },
+    price: { type: DataTypes.DOUBLE, defaultValue: 0 },
     score: { type: DataTypes.INTEGER, defaultValue: 0 },
     from_user: { type: DataTypes.BIGINT },
     from_username: { type: DataTypes.STRING, defaultValue: 'system' },
     to_user: { type: DataTypes.BIGINT, defaultValue: 0 },
     to_username: { type: DataTypes.STRING, defaultValue: 'system' },
-    price: { type: DataTypes.DOUBLE, defaultValue: 0 },
     from_address: { type: DataTypes.STRING, defaultValue: '' },
     to_address: { type: DataTypes.STRING, defaultValue: '' },
     desc: { type: DataTypes.STRING },
