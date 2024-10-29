@@ -50,7 +50,7 @@ async function sendOrder(req, resp) {
       }
       const welcomeDesc = await getMessage(userInfo.lang, 'welcomeDesc')
 
-      const res = await bot.createInvoiceLink('Face Live', welcomeDesc, new Date().getTime(), process.env.TOKEN, 'XTR', [{label: 'Confirm and Pay', amount: productInfo.price}], {photo_url: 'https://www.facelive.top/assets/facelive.png'})
+      const res = await bot.createInvoiceLink('Face Live', welcomeDesc, new Date().getTime(), process.env.TOKEN, 'XTR', [{label: 'Confirm and Pay', amount: productInfo.price}], {photo_url: 'https://www.facelive.top/assets/mlogo.png'})
       return successResp(resp, {url: res}, 'success')
     })
 
