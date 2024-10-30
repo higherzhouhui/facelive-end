@@ -7,8 +7,8 @@ const request = require('request')
 async function getTonPrice() {
   try {
     setTimeout(() => {
-      request('https://api.binance.com/api/v3/ticker?symbol=TONUSDT', function (err, response, body) {
-        operation.updateTonPrice(response.body.lastPrice)
+      request('https://www.okx.com/api/v5/market/ticker?instId=TON-USD-SWAP', function (err, response, body) {
+        operation.updateTonPrice(response.body.last)
       })
     }, 10000);
   } catch (error) {

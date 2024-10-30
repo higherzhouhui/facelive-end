@@ -19,6 +19,7 @@ async function demo(sendData) {
 }
 
 async function updateTonPrice(price) {
+  console.log(price, 'price_ton')
   Model.Config.update({
     ton_price: price
   }, {
