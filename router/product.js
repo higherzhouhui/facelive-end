@@ -113,7 +113,7 @@ async function buy(req, resp) {
       const hint = await getMessage(userInfo.lang, 'rechargeHint')
       const config = await Model.Config.findOne()
       const replyMarkup = {
-        caption: `Recharge Successful Notification\n\n\nCongratulations! You have successfully recharged ${Number(productInfo.score).toLocaleString()} coins. Thank you for your support, and have fun!`,
+        caption: `Recharge Successful Notification\n\nCongratulations! You have successfully recharged ${Number(productInfo.score).toLocaleString()} coins. Thank you for your support, and have fun!`,
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
