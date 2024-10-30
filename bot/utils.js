@@ -58,7 +58,7 @@ Thousands of girls are ready for one-on-one video chats with you, and new faces 
 Explore hidden groups to discover more free 18+ content waiting for you! 🔞
 Click the link to sign up and start your amazing journey!`
     const subscribeChannel = await getMessage(chatId, 'subscribeChannel')
-    const source = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5_Eq-smr3FcMNo8S_MBmVAiBLgG-QF1awag&s';
+    const source = 'https://www.facelive.top/welcome.png';
     const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username || msg.chat.last_name}</b>\n\n ${welcome}\n`;
     const replyMarkup = {
       caption: text,
