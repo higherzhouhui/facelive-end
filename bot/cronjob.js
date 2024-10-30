@@ -7,9 +7,11 @@ const request = require('request')
 async function getTonPrice() {
   try {
     request('https://www.okx.com/api/v5/market/ticker?instId=TON-USD-SWAP', function (err, response, body) {
-      const obj = JSON.parse(body)
-      const price = obj.data[0].last
-      operation.updateTonPrice(price)
+      if (body) {
+        const obj = JSON.parse(body)
+        const price = obj.data[0].last
+        operation.updateTonPrice(price)
+      }
     })
   } catch (error) {
     bot_logger().error('获取价格失败', `${error}`)
