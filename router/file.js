@@ -9,6 +9,7 @@ const { exec } = require('child_process')
 const imagesDirectory = 'public';
 const imageDir = '/' + imagesDirectory + '/';
 let uploadedFileName;
+let fileName;
 const storageDisk = multer.diskStorage({
   destination: imagesDirectory,
   filename: function (req, file, callback) {
@@ -21,7 +22,8 @@ const storageDisk = multer.diskStorage({
         const lastIndexOf = file.originalname.lastIndexOf(".");
         //获取文件的后缀名 .jpg
         const suffix = file.originalname.substring(lastIndexOf);
-        uploadedFileName = String(Math.round((Math.random() * 10000) / 10)) + String(new Date().getTime()) + suffix;
+        fileName = String(Math.round((Math.random() * 10000) / 10)) + String(new Date().getTime())
+        uploadedFileName = fileName + suffix;
       } else {
         console.log('Some other error: ', err.code);
       }
@@ -47,29 +49,45 @@ async function uploadFile(req, resp) {
       if (!uploadedFileName) {
         return errorResp(resp, 400, 'error')
       }
+      const targetPath = systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`)
       // 移动文件
-      fs.rename(systemPath.join(__dirname, `../public/${uploadedFileName}`), systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`), function (err) {
+      fs.rename(systemPath.join(__dirname, `../public/${uploadedFileName}`), targetPath, function (err) {
         if (err) {
           console.error('Error moving file:', err);
           return;
         }
       });
+      
       let home_cover = ''
       if (type == 'video' && path == 'cover') {
-        const inputPath = systemPath.join(__dirname, `../public/${type}/${path}/${uploadedFileName}`)
         const lastIndexOf = uploadedFileName.lastIndexOf(".");
         //获取文件的后缀名 .jpg
         const prefix = uploadedFileName.substring(0, lastIndexOf);
         const cover = systemPath.join(__dirname, `../public/image/cover/${prefix}.jpg`)
         home_cover = `/image/cover/${prefix}.jpg`
-        exec(`ffmpeg -i ${inputPath} -ss 00:00:01 -vframes 1 ${cover}`, (error, stdout, stderr) => {
+        exec(`ffmpeg -i ${targetPath} -ss 00:00:01 -vframes 1 ${cover}`, (error, stdout, stderr) => {
           if (error) {
             console.error(`执行的错误: ${error}`);
             return;
           }
         })
       }
-      return successResp(resp, { fileUrl: `/${type}/${path}/${uploadedFileName}`, home_cover: home_cover }, 'success')
+      // fs.unlink(targetPath, (error) => {
+      //   if (error) {
+      //     console.error(error)
+      //   } else {
+      //     console.log('文件删除成功')
+      //   }
+      // })
+      const m3u8_path = systemPath.join(__dirname, `../public/${type}/${path}/${fileName}.m3u8`)
+
+      exec(`ffmpeg -i ${targetPath} -profile:v baseline -level 3.0 -start_number 0 -hls_time 1 -hls_list_size 0 -f hls ${m3u8_path}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`执行的错误: ${error}`);
+          return;
+        }
+      })
+      return successResp(resp, { fileUrl: `/${type}/${path}/${fileName}.m3u8`, home_cover: home_cover }, 'success')
     })
   } catch (error) {
     file_logger().error('上传文件失败', error)

@@ -21,7 +21,7 @@ async function sendMessageToChannel() {
     const config = await operation.get_config()
     const anchorInfo = await operation.getMessageToChannel()
     let star = ''
-    for (let i = 0; i < anchorInfo.star; i++) {
+    for (let i = 0; i < Math.round(anchorInfo.star); i++) {
       star += '⭐️'
     }
     const replyMarkup = {
