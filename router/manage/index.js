@@ -184,9 +184,11 @@ async function getHomeInfo(req, resp) {
       }
     })
     const totalVisit = await Model.Visit.count()
-    const totalTon = await Model.Event.sum('price', {
+    const totalPrice = await Model.Event.sum('price', {
       where: {
-        type: 'recharge'
+        type: {
+          [dataBase.Op.like]: '%recharge%'
+        }
       }
     })
     const totalUse = await Model.Event.sum('score', {
@@ -204,20 +206,21 @@ async function getHomeInfo(req, resp) {
       }
     })
 
-    const todayTon = await Model.Event.findAll({
+    const todayPrice = await Model.Event.findAll({
       attributes: [
         'createdAt',
-        [dataBase.sequelize.literal('SUM(price)'), 'totalTon']
+        [dataBase.sequelize.literal('SUM(price)'), 'totalPrice']
       ],
       where: {
         createdAt: {
           [dataBase.Op.gt]: todayStart,
           [dataBase.Op.lt]: todayEnd
         },
-        type: 'recharge'
+        type: {
+          [dataBase.Op.like]: '%recharge%'
+        }
       }
     })
-
     const todayUse = await Model.Event.findAll({
       attributes: [
         'createdAt',
@@ -255,7 +258,7 @@ async function getHomeInfo(req, resp) {
     startDate.setHours(23, 59, 59, 0); // Set today's end time
 
 
-    const getList = async (day, table, type) => {
+    const getList = async (day, table, type, sum) => {
       const list = [];
       for (let i = day - 1; i >= 0; i--) {
         const endDate = new Date(todayStart);
@@ -270,9 +273,12 @@ async function getHomeInfo(req, resp) {
       if (table == 'user' || table == 'visit') {
         sql = `
         SELECT DATE(createdAt) as date, COUNT(*) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate GROUP BY date;`;
+      } else if (sum) {
+        sql = `
+         SELECT DATE(createdAt) as date, sum(${sum}) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate ${type ? `AND type LIKE '%${type}%'` : ''} GROUP BY date;`;
       } else {
         sql = `
-         SELECT DATE(createdAt) as date, sum(${type == 'recharge' ? 'price' : 'score'}) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate ${type ? `AND type='${type}'` : ''} GROUP BY date;`;
+         SELECT DATE(createdAt) as date, sum(score) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate GROUP BY date;`;
       }
       const startDate = new Date()
       const endDate = new Date(todayStart);
@@ -298,9 +304,12 @@ async function getHomeInfo(req, resp) {
     const userList = await getList(req.query.day, 'user', '');
     const visitList = await getList(req.query.day, 'visit', '');
     const scoreList = await getList(req.query.day, 'event', '');
-    const rechargeList = await getList(req.query.day, 'event', 'recharge');
+    const rechargeList = await getList(req.query.day, 'event', 'recharge', 'price');
+    const rechargeTonList = await getList(req.query.day, 'event', 'recharge_ton', 'amount');
+    const rechargeStarList = await getList(req.query.day, 'event', 'recharge_star', 'amount');
 
 
+    
     let resData = {
       totalScore,
       totalUser,
@@ -310,26 +319,28 @@ async function getHomeInfo(req, resp) {
       todayVisit: todayVisit.length,
       totalUse,
       todayUse: Math.abs(todayUse[0].dataValues.totalUse),
-      totalTon,
-      todayTon: todayTon[0].dataValues.totalTon,
+      totalPrice,
+      todayPrice: todayPrice[0].dataValues.totalPrice,
       todayScore: todayScore[0].dataValues.totalScore,
       rechargeList,
       userList,
       scoreList,
       visitList,
+      rechargeTonList,
+      rechargeStarList,
     }
 
-    function handleNumber(obj) {
-      const resData = obj
-      Object.keys(resData).forEach(key => {
-        if (!isNaN(resData[key])) {
-          resData[key] = Math.round(resData[key])
-        }
-      })
-      return resData
-    }
+    // function handleNumber(obj) {
+    //   const resData = obj
+    //   Object.keys(resData).forEach(key => {
+    //     if (!isNaN(resData[key])) {
+    //       resData[key] = Math.round(resData[key])
+    //     }
+    //   })
+    //   return resData
+    // }
 
-    resData = handleNumber(resData)
+    // resData = handleNumber(resData)
 
     return successResp(resp, resData, 'success')
 

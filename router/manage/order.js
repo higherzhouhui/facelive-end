@@ -20,7 +20,13 @@ async function getList(req, resp) {
   try {
     const data = req.query
     let where = {
-      type: 'recharge'
+    }
+    if (data.type) {
+      where.type = data.type
+    } else {
+      where.type = {
+        [dataBase.Op.in]: ['recharge_ton', 'recharge_star']
+      }
     }
     if (data.from_user) {
       where.from_user = {
@@ -58,12 +64,26 @@ async function getList(req, resp) {
       offset: (data.pageNum - 1) * data.pageSize,
       limit: parseInt(data.pageSize),
     })
-    const ton = await Model.Event.sum('price', {
+
+    const price = await Model.Event.sum('price', {
       where: {
-        type: 'recharge'
+        type: where.type
       }
     })
-    return successResp(resp, { ...countAll, ton: ton ||  0}, 'success')
+
+    const ton = await Model.Event.sum('amount', {
+      where: {
+        type: 'recharge_ton'
+      }
+    })
+
+    const star = await Model.Event.sum('amount', {
+      where: {
+        type: 'recharge_star'
+      }
+    })
+
+    return successResp(resp, { ...countAll, price: price || 0, ton: ton || 0, star: star || 0}, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)

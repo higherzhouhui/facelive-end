@@ -65,8 +65,9 @@ async function getUserList(req, resp) {
       list.rows[i].subUser = subUser
     }
 
-    const total_use = await Model.User.sum('use_ton');
-    return successResp(resp, { total_use: total_use || 0, ...list}, 'success')
+    const total_ton = await Model.User.sum('use_ton');
+    const total_star = await Model.User.sum('use_star');
+    return successResp(resp, { total_ton: total_ton || 0, total_star: total_star || 0, ...list}, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
@@ -105,12 +106,17 @@ async function getUserInviteList(req, resp) {
       list.rows[i].subUser = subUser
     }
 
-    const total_use = await Model.User.sum('use_ton', {
+    const total_ton = await Model.User.sum('use_ton', {
       where: {
         startParam: data.user_id
       }
     });
-    return successResp(resp, { total_use: total_use || 0, ...list}, 'success')
+    const total_star = await Model.User.sum('use_star', {
+      where: {
+        startParam: data.user_id
+      }
+    });
+    return successResp(resp, { total_ton: total_ton || 0,total_star: total_star || 0, ...list}, 'success')
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)

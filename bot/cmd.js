@@ -105,7 +105,28 @@ bot.onText(/\/feedback/, async (msg) => {
   }
 })
 
+// 处理预检查查询
+bot.on('pre_checkout_query', (query) => {
+  bot_logger().log('pre_checkout_query', query)
+  // 验证支付请求
+  if (query.invoice_payload == 'FACE_LIVE_PAY') {
+      bot_logger().log('checkout_query', query)
+      bot.answerPreCheckoutQuery(query.id, true); // 确认支付请求
+      operation.create_star_record(query)
+  } else {
+      bot.answerPreCheckoutQuery(query.id, false, 'Payment declined'); // 拒绝支付请求
+  }
+});
 
+// 处理支付成功
+bot.on('successful_payment', (payment) => {
+  // 处理支付成功
+  // bot.sendMessage(payment.from.id, 'Thank you for your purchase!').then((message) => {
+  //     console.log('Payment confirmation sent:', message);
+  // }).catch((error) => {
+  //     console.error('Error sending payment confirmation:', error);
+  // });
+});
 
 
 bot.onText(/\/sendMessage/, async (msg) => {

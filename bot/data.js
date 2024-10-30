@@ -18,6 +18,20 @@ async function demo(sendData) {
   })
 }
 
+async function create_star_record(sendData) {
+  await dataBase.sequelize.transaction(async (t) => {
+    try {
+      Model.Star.create({
+        user_id: sendData.from.id,
+        amount: sendData.total_amount
+      })
+    } catch (error) {
+      console.error(error)
+      bot_logger().error(`demo Error: ${error}`)
+    }
+  })
+}
+
 async function get_all_user(sendData) {
   const data = handleSendData(sendData)
   operation_log(data)
@@ -1031,6 +1045,7 @@ module.exports = {
   accord_option_scriptId,
   get_all_user,
   getMessageToChannel,
+  create_star_record,
 }
 
 

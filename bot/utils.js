@@ -52,11 +52,14 @@ async function startShow(msg) {
     const config = await operation.get_config()
     const link = `${config.bot_link}?start=${btoa(chatId)}`
     const hi = await getMessage(chatId, 'hi')
-    const welcome = await getMessage(chatId, 'welcome')
-    const welcomeDesc = await getMessage(chatId, 'welcomeDesc')
+    const welcome = `- Thousands of girls are ready to have one-on-one video chats with you. New girls join every day. 💃🏻\n-  Join their private group to get exclusive hot photos, videos, and live streams. 📸\n-  Explore hidden groups and discover more free content waiting for you aged 18 and above.🔞`
+    const welcomeDesc = `Hey, come join me!
+Thousands of girls are ready for one-on-one video chats with you, and new faces are joining every day! 💃🏻
+Explore hidden groups to discover more free 18+ content waiting for you! 🔞
+Click the link to sign up and start your amazing journey!`
     const subscribeChannel = await getMessage(chatId, 'subscribeChannel')
     const source = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5_Eq-smr3FcMNo8S_MBmVAiBLgG-QF1awag&s';
-    const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username} ${welcome}</b>\n\n${welcomeDesc}\n`;
+    const text = `\n<b>${hi} ${msg.chat.first_name || msg.chat.username || msg.chat.last_name}</b>\n\n ${welcome}\n`;
     const replyMarkup = {
       caption: text,
       parse_mode: 'HTML',
@@ -64,13 +67,13 @@ async function startShow(msg) {
         inline_keyboard: [
           [
             {
-              text: await getMessage(chatId, 'inviteText'),
+              text: `💝 FaceLive Girl`,
               url: config.tg_link,
             },
           ],
           [
             {
-              text: await getMessage(chatId, 'yqhqjb'),
+              text: `Invite friends to get more Coins`,
               switch_inline_query: `${welcomeDesc}\n${link}`
             },
           ],

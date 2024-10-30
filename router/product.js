@@ -4,15 +4,17 @@ const Model = require('../model/index')
 const dataBase = require('../model/database')
 const { logger, getMessage } = require('../utils/common')
 const { bot } = require('../bot/index')
+
+
 /**
  * get /api/product/list
- * @summary 查询主播列表
+ * @summary 查询产品列表
  * @tags product
- * @description 查询主播列表
+ * @description 查询产品列表
  * @security - Authorization
  */
 async function list(req, resp) {
-  product_logger().info('查询主播列表', req.id)
+  product_logger().info('查询产品列表', req.id)
   try {
     await dataBase.sequelize.transaction(async (t) => {
       const list = await Model.Product.findAll({
@@ -21,7 +23,7 @@ async function list(req, resp) {
       return successResp(resp, list, 'success')
     })
   } catch (error) {
-    logger('product', 'error').error(`${req.id} 查询主播列表失败：${error}`)
+    logger('product', 'error').error(`${req.id} 查询产品列表失败：${error}`)
     console.error(`${error}`)
     return errorResp(resp, 400, `${error}`)
   }
@@ -38,17 +40,13 @@ async function sendOrder(req, resp) {
   product_logger().info('发送账单', req.id)
   try {
     await dataBase.sequelize.transaction(async (t) => {
-      const { id } = req.body
-      const userInfo = await Model.User.findOne({
-        where: {
-          user_id: req.id
-        }
-      })
+      const { id, amount } = req.body
+    
       const productInfo = await Model.Product.findByPk(id)
       if (!productInfo) {
         return errorResp(resp, 400, `can't find this product`)
       }
-      const link = await bot.createInvoiceLink(`${productInfo.score} Coins`, 'description', new Date().getTime() + 1000000, '', 'XTR', [{ label: 'Coins', amount: productInfo.price }], { photo_url: 'https://www.facelive.top/assets/mlogo.png' })
+      const link = await bot.createInvoiceLink(`${productInfo.score} Coins`, 'FaceLive', 'FACE_LIVE_PAY', '', 'XTR', [{ label: 'Coins', amount: amount }], { photo_url: 'https://www.facelive.top/assets/mlogo.png' })
       return successResp(resp, { url: link }, 'success')
     })
 
@@ -72,7 +70,7 @@ async function buy(req, resp) {
   product_logger().info('购买coins', req.id)
   try {
     await dataBase.sequelize.transaction(async (t) => {
-      const { id, from_address, to_address } = req.body
+      const { id, from_address, to_address, type, amount } = req.body
       const productInfo = await Model.Product.findByPk(id)
       if (!productInfo) {
         return errorResp(resp, 400, `can't find this product`)
@@ -85,34 +83,43 @@ async function buy(req, resp) {
       if (!userInfo) {
         return errorResp(resp, 403, `can't find this user`)
       }
-      userInfo = await userInfo.increment({
-        score: productInfo.score,
-        use_ton: productInfo.price
-      })
+      if (type == 'TON') {
+        userInfo = await userInfo.increment({
+          score: productInfo.score,
+          use_ton: amount
+        })
+      } else {
+        userInfo = await userInfo.increment({
+          score: productInfo.score,
+          use_star: amount
+        })
+      }
+    
       let event_data = {
-        type: 'recharge',
+        type: `recharge_${type}`,
         from_user: req.id,
         from_username: userInfo.username,
+        amount: amount,
         to_user: req.id,
         to_username: userInfo.username,
         score: productInfo.score,
         price: productInfo.price,
         from_address,
         to_address,
-        desc: `${userInfo.username} 充值了 ${productInfo.price} Star 获得了 ${productInfo.score} Coins`,
+        desc: `${userInfo.username} 充值了 $${productInfo.price} 获得了 ${productInfo.score} Coins`,
       }
       await Model.Event.create(event_data)
       // 机器人推送充值消息
       const hint = await getMessage(userInfo.lang, 'rechargeHint')
       const config = await Model.Config.findOne()
       const replyMarkup = {
-        caption: `${hint} <b>${productInfo.score} Coins!</b>`,
+        caption: `Recharge Successful Notification\n\n\nCongratulations! You have successfully recharged ${Number(productInfo.score).toLocaleString()} coins. Thank you for your support, and have fun!`,
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: await getMessage(userInfo.lang, 'inviteText'),
+                text: '💝 FaceLive Girl',
                 url: config.tg_link,
               },
             ],

@@ -33,7 +33,7 @@ const User = db.sequelize.define(
     chat_anchor: { type: DataTypes.STRING },
     lang: { type: DataTypes.STRING },
     use_ton: { type: DataTypes.DOUBLE, defaultValue: 0 },
-    user_star: { type: DataTypes.INTEGER, defaultValue: 0 },
+    use_star: { type: DataTypes.INTEGER, defaultValue: 0 },
     // level: { type: DataTypes.INTEGER, defaultValue: 0 },
     // path: { type: DataTypes.STRING, defaultValue: '-' },
   },
@@ -159,6 +159,7 @@ const Event = db.sequelize.define(
   {
     type: { type: DataTypes.STRING },
     price: { type: DataTypes.DOUBLE, defaultValue: 0 },
+    amount: { type: DataTypes.DOUBLE, defaultValue: 0 },
     score: { type: DataTypes.INTEGER, defaultValue: 0 },
     from_user: { type: DataTypes.BIGINT },
     from_username: { type: DataTypes.STRING, defaultValue: 'system' },
@@ -203,6 +204,18 @@ const Product = db.sequelize.define(
   },
   {
     tableName: 'product'
+  }
+)
+
+/** 产品  */
+const Star = db.sequelize.define(
+  'star',
+  {
+    score: { type: DataTypes.INTEGER },
+    user_id: { type: DataTypes.BIGINT },
+  },
+  {
+    tableName: 'star'
   }
 )
 
@@ -296,7 +309,7 @@ const Anchor = db.sequelize.define(
     home_cover: { type: DataTypes.STRING },
     heart: { type: DataTypes.INTEGER, defaultValue: 5000 },
     sort: { type: DataTypes.INTEGER, defaultValue: 0 },
-    star: { type: DataTypes.INTEGER, defaultValue: 5 },
+    star: { type: DataTypes.DOUBLE, defaultValue: 5 },
     time: { type: DataTypes.INTEGER, defaultValue: 50000 },
     fens: { type: DataTypes.INTEGER, defaultValue: 50000 },
     return: { type: DataTypes.INTEGER, defaultValue: 500 },
@@ -380,4 +393,5 @@ module.exports = {
   UserVideo,
   Visit,
   Notice,
+  Star,
 }
