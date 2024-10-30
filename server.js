@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // 存储IP和请求时间的缓存
 const rateLimitCache = new Map();
- 
+
 // 清理旧的缓存记录的定时器
 setInterval(() => {
   rateLimitCache.clear();
@@ -55,7 +55,14 @@ app.use(rateLimiter);
 
 
 // 跨域配置
-app.use(cors())
+// app.use(cors())
+
+app.all("*", (req, res, next) => {  
+  res.header("Access-Control-Allow-Origin", "*"); // 允许任意域名跨域  
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
+  next();  
+}); 
+
 
 // 定义不需要校验token的白名单接口
 const white_list = [
@@ -83,6 +90,8 @@ app.use((req, resp, next) => {
       return false
     })
   ) {
+    return next()
+  } else if (path.includes('/video/')) {
     return next()
   }
   token_auth(req, resp, next)
