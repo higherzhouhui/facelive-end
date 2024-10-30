@@ -21,7 +21,7 @@ async function list(req, resp) {
       if (isCommend) {
         const list = await Model.Anchor.findAll({
           order: [order],
-          attributes: ['name', 'home_cover', 'country', 'id'],
+          attributes: ['name', 'avatar', 'country', 'id'],
           where: {
             isCommend: true
           }
