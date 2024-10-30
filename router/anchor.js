@@ -530,12 +530,14 @@ async function getNextAnchor(id) {
     sort = originAnchor.sort
   }
   const detail = await Model.Anchor.findOne({
+    order: [['sort', 'asc']],
     where: {
       sort: {
         [dataBase.Op.gt]: sort
       }
     }
   })
+
   if (detail) {
     return detail
   } else {
@@ -553,6 +555,7 @@ async function getLastAnchor(id) {
     sort = originAnchor.sort
   }
   const detail = await Model.Anchor.findOne({
+    order: [['sort', 'asc']],
     where: {
       sort: {
         [dataBase.Op.lt]: sort
@@ -562,7 +565,7 @@ async function getLastAnchor(id) {
   if (detail) {
     return detail
   } else {
-    return getNextAnchor(maxSort.sort)
+    return getLastAnchor(maxSort.sort)
   }
 }
 
