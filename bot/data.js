@@ -18,6 +18,14 @@ async function demo(sendData) {
   })
 }
 
+async function updateTonPrice(price) {
+  Model.Config.update({
+    ton_price: price
+  }, {
+    where: {}
+  })
+}
+
 async function create_star_record(sendData) {
   await dataBase.sequelize.transaction(async (t) => {
     try {
@@ -1046,6 +1054,7 @@ module.exports = {
   get_all_user,
   getMessageToChannel,
   create_star_record,
+  updateTonPrice,
 }
 
 

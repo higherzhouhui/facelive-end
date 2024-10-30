@@ -2,6 +2,19 @@ const cron = require('node-cron');
 const { bot, bot_logger } = require('./index')
 const operation = require('./data');
 const utils = require('./utils')
+const request = require('request')
+
+async function getTonPrice() {
+  try {
+    setTimeout(() => {
+      request('https://api.binance.com/api/v3/ticker?symbol=TONUSDT', function (err, response, body) {
+        operation.updateTonPrice(response.body.lastPrice)
+      })
+    }, 10000);
+  } catch (error) {
+    bot_logger().error('获取价格失败', `${error}`)
+  }
+}
 
 async function sendMessageToChannel() {
   try {
@@ -21,7 +34,7 @@ async function sendMessageToChannel() {
               text: 'Available | Video Chat with Her',
               url: config.tg_link,
             },
-           
+
           ],
         ]
       }
@@ -39,3 +52,14 @@ cron.schedule('*/15 * * * *', () => {
   scheduled: true,
   timezone: 'Asia/Chongqing'
 });
+
+cron.schedule('*/5 * * * *', () => {
+  getTonPrice()
+}, {
+  scheduled: true,
+  timezone: 'Asia/Chongqing'
+});
+
+setTimeout(() => {
+  getTonPrice()
+}, 10000);
