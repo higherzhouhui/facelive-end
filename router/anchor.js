@@ -241,7 +241,7 @@ async function three(req, resp) {
           user_id: req.id
         }
       })
-      const details = [lastAnchor, currentAnchor, nextAnchor]
+      const details = [nextAnchor, currentAnchor, lastAnchor]
       if (userInfo) {
         for (let i = 0; i < details.length; i++) {
           const detail = details[i]
@@ -287,9 +287,9 @@ async function more(req, resp) {
   try {
     await dataBase.sequelize.transaction(async (t) => {
       const { id } = req.query
-      const nextAnchor1 = await getNextAnchor(id)
-      const nextAnchor2 = await getNextAnchor(nextAnchor1.id)
-      const nextAnchor3 = await getNextAnchor(nextAnchor2.id)
+      const nextAnchor1 = await getLastAnchor(id)
+      const nextAnchor2 = await getLastAnchor(nextAnchor1.id)
+      const nextAnchor3 = await getLastAnchor(nextAnchor2.id)
       const userInfo = await Model.User.findOne({
         where: {
           user_id: req.id
