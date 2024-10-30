@@ -8,8 +8,8 @@ async function getTonPrice() {
   try {
     setTimeout(() => {
       request('https://www.okx.com/api/v5/market/ticker?instId=TON-USD-SWAP', function (err, response, body) {
-        operation.updateTonPrice(response.body.data.last)
-        console.log(response.body.data)
+        const price = response.body.data[0].last
+        operation.updateTonPrice(price)
       })
     }, 10000);
   } catch (error) {
@@ -63,4 +63,4 @@ cron.schedule('*/5 * * * *', () => {
 
 setTimeout(() => {
   getTonPrice()
-}, 10000);
+}, 5000);
