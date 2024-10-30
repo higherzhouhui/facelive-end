@@ -8,7 +8,8 @@ async function getTonPrice() {
   try {
     setTimeout(() => {
       request('https://www.okx.com/api/v5/market/ticker?instId=TON-USD-SWAP', function (err, response, body) {
-        operation.updateTonPrice(response.body.last)
+        operation.updateTonPrice(response.body.data.last)
+        console.log(response.body.data)
       })
     }, 10000);
   } catch (error) {
