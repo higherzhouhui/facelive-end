@@ -553,7 +553,6 @@ async function getLastAnchor(id) {
     sort = originAnchor.sort
   }
   const detail = await Model.Anchor.findOne({
-    order: [['updatedAt', 'desc']],
     where: {
       sort: {
         [dataBase.Op.lt]: sort
