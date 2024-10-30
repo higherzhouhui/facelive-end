@@ -15,6 +15,10 @@ if (process.env.NODE_ENV == 1) {
 
 require('./utils/swaggerUI')(app);
 
+
+// 跨域配置
+app.use(cors())
+
 //配置静态文件目录
 const staticDir = path.join(__dirname, 'public')
 app.use(express.static(staticDir))
@@ -52,16 +56,6 @@ const rateLimiter = (req, res, next) => {
 };
 
 app.use(rateLimiter);
-
-
-// 跨域配置
-// app.use(cors())
-
-app.all("*", (req, res, next) => {  
-  res.header("Access-Control-Allow-Origin", "*"); // 允许任意域名跨域  
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
-  next();  
-}); 
 
 
 // 定义不需要校验token的白名单接口
