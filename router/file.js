@@ -80,14 +80,14 @@ async function uploadFile(req, resp) {
       //   }
       // })
       const m3u8_path = systemPath.join(__dirname, `../public/${type}/${path}/${fileName}.m3u8`)
-
-      exec(`ffmpeg -i ${targetPath} -profile:v baseline -level 3.0 -start_number 0 -hls_time 1 -hls_list_size 0 -f hls ${m3u8_path}`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`执行的错误: ${error}`);
-          return;
-        }
-      })
-      
+      if (type == 'video') {
+        exec(`ffmpeg -i ${targetPath} -profile:v baseline -level 3.0 -start_number 0 -hls_time 1 -hls_list_size 0 -f hls ${m3u8_path}`, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`执行的错误: ${error}`);
+            return;
+          }
+        })
+      }
       return successResp(resp, { fileUrl: `/${type}/${path}/${type == 'video' ? fileName + '.m3u8' : uploadedFileName}`, home_cover: home_cover }, 'success')
     })
   } catch (error) {
