@@ -87,7 +87,8 @@ async function uploadFile(req, resp) {
           return;
         }
       })
-      return successResp(resp, { fileUrl: `/${type}/${path}/${fileName}.m3u8`, home_cover: home_cover }, 'success')
+      
+      return successResp(resp, { fileUrl: `/${type}/${path}/${type == 'video' ? fileName + '.m3u8' : uploadedFileName}`, home_cover: home_cover }, 'success')
     })
   } catch (error) {
     file_logger().error('上传文件失败', error)
