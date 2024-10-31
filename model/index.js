@@ -211,7 +211,7 @@ const Product = db.sequelize.define(
 const Star = db.sequelize.define(
   'star',
   {
-    score: { type: DataTypes.INTEGER },
+    amount: { type: DataTypes.INTEGER },
     user_id: { type: DataTypes.BIGINT },
   },
   {
