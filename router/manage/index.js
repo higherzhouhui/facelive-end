@@ -163,8 +163,8 @@ async function getUserInviteList(req, resp) {
 async function getHomeInfo(req, resp) {
   manager_logger().info('View homepage information')
   try {
-    const todayStart = new Date();
-    todayStart.setHours(8, 0, 0, 0); // Set today's start time
+    let todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0)
     const todayEnd = new Date(todayStart);
     todayEnd.setDate(todayEnd.getDate() + 1); // Set today's end time
 
@@ -250,18 +250,10 @@ async function getHomeInfo(req, resp) {
       }
     })
 
- 
-
-   
-    // Get the date from **n** days ago
-    const startDate = new Date()
-    startDate.setHours(23, 59, 59, 0); // Set today's end time
-
-
     const getList = async (day, table, type, sum) => {
       const list = [];
       for (let i = day - 1; i >= 0; i--) {
-        const endDate = new Date(todayStart);
+        const endDate = new Date();
         endDate.setDate(endDate.getDate() - i);
         endDate.setHours(0, 0, 0, 0)
         list.push({
@@ -280,10 +272,10 @@ async function getHomeInfo(req, resp) {
         sql = `
          SELECT DATE(createdAt) as date, sum(score) as num from ${table} WHERE createdAt >= :endDate AND createdAt <= :startDate GROUP BY date;`;
       }
-      const startDate = new Date()
-      const endDate = new Date(todayStart);
+      const startDate = new Date();
+      const endDate = new Date();
       endDate.setDate(endDate.getDate() - req.query.day);
-
+      
       const listResult = await dataBase.sequelize.query(sql, {
         type: dataBase.QueryTypes.SELECT,
         replacements: { startDate, endDate },
@@ -302,10 +294,18 @@ async function getHomeInfo(req, resp) {
 
 
     const userList = await getList(req.query.day, 'user', '');
+    userList[req.query.day - 1].num = todayRegister
+    
     const visitList = await getList(req.query.day, 'visit', '');
+    visitList[req.query.day - 1].num = todayVisit.length
+    
     const scoreList = await getList(req.query.day, 'event', '');
     const rechargeList = await getList(req.query.day, 'event', 'recharge', 'price');
+    rechargeList[req.query.day - 1].num = todayPrice[0].dataValues.totalPrice
+    
     const rechargeTonList = await getList(req.query.day, 'event', 'recharge_ton', 'amount');
+
+    
     const rechargeStarList = await getList(req.query.day, 'event', 'recharge_star', 'amount');
 
 
