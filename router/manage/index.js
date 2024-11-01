@@ -164,7 +164,7 @@ async function getHomeInfo(req, resp) {
   manager_logger().info('View homepage information')
   try {
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0); // Set today's start time
+    todayStart.setHours(8, 0, 0, 0); // Set today's start time
     const todayEnd = new Date(todayStart);
     todayEnd.setDate(todayEnd.getDate() + 1); // Set today's end time
 
