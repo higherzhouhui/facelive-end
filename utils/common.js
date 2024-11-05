@@ -1,12 +1,10 @@
-const Model = require('../model/index')
-const dataBase = require('../model/database')
 const jwt = require('jsonwebtoken')
 const SECRET_KEY = 'FACE_LIVE'
 const log4js = require('log4js')
 
 function createToken(data) {
   const token = jwt.sign(
-    { user: {username: data.username, id: data.user_id} },
+    { user: {username: data.username, id: data.id} },
     SECRET_KEY,
     { expiresIn: '10 days' }
   )
@@ -118,48 +116,6 @@ function formatNumTen(money, length = 5) {
 }
 
 
-
-
-function accordingIdGetTime(id) {
-  let year = 0;
-  let percent = 99;
-  const fiveYear = 1000000000
-  const fourYear = 2000000000
-  const threeYear = 3000000000
-  const twoYear = 4000000000
-  const oneYear = 5000000000
-  const now = 6300000000
-  if (id > now) {
-    year = 0
-  }
-  if (id <= now && id > oneYear) {
-    year = 1
-    percent = 90
-  }
-  if (id <= oneYear && id > twoYear) {
-    year = 2
-    percent = 80
-  }
-  if (id <= twoYear && id > threeYear) {
-    year = 3
-    percent = 70
-  }
-  if (id <= threeYear && id > fourYear) {
-    year = 4
-    percent = 60
-  }
-  if (id <= fourYear && id > fiveYear) {
-    year = 5
-    percent = 50
-  }
-  if (id < fiveYear) {
-    year = 6
-    percent = 20
-  }
-  return { year, percent }
-}
-
-
 function isLastDay(timestamp, diff) {
   const date = new Date()
   date.setDate(date.getDate() - diff)
@@ -170,11 +126,8 @@ function isLastDay(timestamp, diff) {
   return timestamp >= startTimeStamp && timestamp < endTimeStamp;
 }
 
-function logger(type, status) {
-  let filename = `./logs/${type}/${type}`
-  if (status == 'error') {
-    filename = `./logs/error/error`
-  }
+function logger(type) {
+  const filename = `./logs/${type}/${type}`
   log4js.configure({
     appenders: {
       out: { type: 'console' },
@@ -189,49 +142,10 @@ function logger(type, status) {
       default: { appenders: ['out', 'app'], level: 'debug' }
     }
   })
-  const logger = log4js.getLogger('anchor')
+  const logger = log4js.getLogger('logs')
   return logger
 }
 
-async function resetUserTicket(user) {
-  let ticket = user.ticket
-  try {
-    if (ticket < 10) {
-      const game_list = await Model.Event.findAll({
-        attributes: ['createdAt', 'gas_add', 'count_begin'],
-        where: {
-          type: 'play_game',
-          from_user: user.user_id,
-          gas_add: {
-            [dataBase.Op.gt]: new Date()
-          }
-        }
-      })
-      let ticket = 10
-      let last_play_time = user.last_play_time
-      if (game_list.length) {
-        ticket = ticket - game_list.length
-        last_play_time = game_list[0].count_begin
-      }
-      user.ticket = ticket
-      user.last_play_time = last_play_time
-      await Model.User.update(
-        {
-          ticket,
-          last_play_time,
-        },
-        {
-          where: {
-            user_id: user.user_id
-          }
-        }
-      )
-    }
-  } catch (error) {
-    console.error('resetUserTicket失败', error)
-  }
-  return user
-}
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -239,7 +153,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/******************************Private method */
 
 module.exports = {
   timestampToTime,
@@ -249,9 +162,7 @@ module.exports = {
   formatNumTen,
   scaleUpByNumber,
   scaleDownByNumber,
-  accordingIdGetTime,
   isLastDay,
-  resetUserTicket,
   createToken,
   logger,
   getRandomInt,

@@ -1,6 +1,6 @@
 const successResp = (resp, data, msg = 'success') => {
   return resp.send({
-    code: 0,
+    code: 200,
     msg: msg,
     data: data
   })

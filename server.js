@@ -60,16 +60,8 @@ app.use(rateLimiter);
 
 // 定义不需要校验token的白名单接口
 const white_list = [
-  '/api/user/login',
-  '/api/user/h5PcLogin',
-  '/api/twitter/callback',
-  '/api/system/scan_block',
-  '/api/admin/migrateData',
-  '/api/dogAdmin/login',
-  '/api/system/resetTicket',
-  /^\/api\/nft\/\d+$/,
-  '/api/system/getConfig',
-  '/api/system/getAllConfig',
+  '/v2/user/login',
+  '/v2/admin/login',
 ]
 app.use((req, resp, next) => {
   const path = req.path // 获取请求的路径
@@ -85,14 +77,12 @@ app.use((req, resp, next) => {
     })
   ) {
     return next()
-  } else if (path.includes('/video/')) {
-    return next()
   }
   token_auth(req, resp, next)
 })
 app.use(logger)
 
-app.use('/api', require('./router/index'))
+app.use('/v2', require('./router/index'))
 
 function system_logger() {
   log4js.configure({

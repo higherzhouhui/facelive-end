@@ -3,9 +3,9 @@ const expressJSDocSwagger = require('express-jsdoc-swagger');
 const options = {
   info: {
     version: '1.0.0',
-    title: 'facelive接口文档',
+    title: 'wedoctor接口文档',
     description:
-      'facelive 后台api接口文档，需要手动配置token，点击Authorize'
+      'wedoctor 后台api接口文档，需要手动配置token，点击Authorize'
   },
   security: {
     Authorization: {
