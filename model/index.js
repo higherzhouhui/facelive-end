@@ -186,6 +186,7 @@ const Country = db.sequelize.define(
     flag: { type: DataTypes.STRING },
     zh: { type: DataTypes.STRING },
     en: { type: DataTypes.STRING },
+    ru: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
@@ -244,6 +245,7 @@ const Language = db.sequelize.define(
     code: { type: DataTypes.STRING },
     zh: { type: DataTypes.STRING },
     en: { type: DataTypes.STRING },
+    ru: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
@@ -260,6 +262,7 @@ const Style = db.sequelize.define(
     code: { type: DataTypes.STRING },
     zh: { type: DataTypes.STRING },
     en: { type: DataTypes.STRING },
+    ru: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
@@ -275,6 +278,7 @@ const Group = db.sequelize.define(
     label: { type: DataTypes.STRING },
     zh: { type: DataTypes.STRING },
     en: { type: DataTypes.STRING },
+    ru: { type: DataTypes.STRING },
     code: { type: DataTypes.STRING },
     sort: { type: DataTypes.INTEGER },
     selected: { type: DataTypes.BOOLEAN, defaultValue: false }

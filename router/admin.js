@@ -98,14 +98,17 @@ async function init_systemLanguageList() {
       {
         label: 'English',
         code: 'en',
-        zh: '英语',
         sort: 10,
       },
       {
         label: '中文',
         code: 'zh',
-        zh: '中文',
         sort: 5,
+      },
+      {
+        label: 'Pусский',
+        code: 'ru',
+        sort: 3,
       },
     ]
     data.forEach(async item => {
@@ -444,7 +447,7 @@ async function init_baseData() {
   await init_manager();
   await init_rewardList();
   await init_systemConfig();
-  // await init_anchorList()
+  await init_anchorList()
   await init_groupList()
   await init_styleList()
   await init_languageList()
