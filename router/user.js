@@ -28,7 +28,15 @@ async function login(req, resp) {
       }
       if (!(data.hash && data.id && data.username && data.authDate)) {
         user_logger().error('Login failed', 'Data format exception')
-        const lang = data.languageCode == 'zh-hans' ? 'zh' : 'en'
+        let lang = data.languageCode
+        if (lang == 'zh-hans') {
+          lang = 'zh'
+        } else if (lang == 'ru') {
+          lang = 'ru'
+        } else {
+          lang = 'en'
+        }
+
         return errorResp(resp, 400, getMessage(lang, 'loginError'))
       }
       let user = await Model.User.findOne({

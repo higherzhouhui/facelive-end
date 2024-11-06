@@ -688,7 +688,13 @@ async function get_language(id) {
       return lang
     }
   })
-  lang = lang == 'zh-hans' ? 'zh' : 'en'
+  if (lang == 'zh-hans') {
+    lang = 'zh'
+  } else if (lang == 'ru') {
+    lang = 'ru'
+  } else {
+    lang = 'en'
+  }
   return lang
 }
 
