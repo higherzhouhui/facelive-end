@@ -271,7 +271,7 @@ async function three(req, resp) {
   } catch (error) {
     logger('anchor', 'error').error(`${req.id} 查询上一个当前下一个主播信息失败：${error}`)
     console.error(`${error}`)
-    return errorResp(resp, 400, `${error}`)
+    return errorResp(resp, 400, `No information found for the anchor`)
   }
 }
 
