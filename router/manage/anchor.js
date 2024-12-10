@@ -19,6 +19,8 @@ async function getList(req, resp) {
   manager_logger().info('View anchor list')
   try {
     const data = req.query
+    const config = await Model.Config.findOne()
+    const url = config.tg_link + `?startapp=anchor_`
     let where = {}
     if (data.name) {
       where.name = {
@@ -60,7 +62,9 @@ async function getList(req, resp) {
       offset: (data.pageNum - 1) * data.pageSize,
       limit: parseInt(data.pageSize),
     })
-   
+    countAll.rows.map((item) => {
+      item.dataValues.url = `${url}${item.id}`
+    })
 
     return successResp(resp, countAll, 'success')
   } catch (error) {
