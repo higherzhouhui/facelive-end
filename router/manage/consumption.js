@@ -70,21 +70,25 @@ async function getCoinRank(req, resp) {
       type: 'chat_video'
     }
    
-    const countAll = await Model.Event.findAndCountAll({
+    const countAll = await Model.Event.findAll({
       where,
       attributes: [
         'id',
         'to_user',
         "to_username",
         [dataBase.sequelize.fn('SUM', dataBase.sequelize.col('score')), 'total'],
-        [dataBase.sequelize.literal('RANK() OVER (ORDER BY SUM(score) ASC)'), 'sort'],
       ],
       group: ['to_user'],
       order: [[dataBase.sequelize.col('total'), 'ASC']]  // 降序排序
     })
- 
-  
-    return successResp(resp, countAll, 'success')
+    countAll.forEach(async (item, index) => {
+      const anchor = await Model.Anchor.findByPk(item.dataValues.to_user)
+      item.dataValues.sort = index + 1
+      item.dataValues.avatar = anchor.avatar
+    })
+    setTimeout(() => {
+      return successResp(resp, countAll, 'success')
+    }, 1000);
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
@@ -109,14 +113,16 @@ async function getRechargeRank(req, resp) {
         'from_user',
         "from_username",
         [dataBase.sequelize.fn('SUM', dataBase.sequelize.col('price')), 'total'],
-        [dataBase.sequelize.literal('RANK() OVER (ORDER BY SUM(price) DESC)'), 'sort'],
       ],
       group: ['from_user'],
       order: [[dataBase.sequelize.col('total'), 'DESC']]  // 降序排序
     })
- 
-  
-    return successResp(resp, countAll, 'success')
+    countAll.forEach((item, index) => {
+      item.dataValues.sort = index + 1
+    })
+    setTimeout(() => {
+      return successResp(resp, countAll, 'success')
+    }, 500);
   } catch (error) {
     manager_logger().info('Failed to view member list', error)
     console.error(`${error}`)
