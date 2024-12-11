@@ -37,6 +37,21 @@ async function getUserList(req, resp) {
     if (data.isPremium) {
       where.isPremium = data.isPremium == 'true' ? true : false
     }
+    if (data.balance) {
+      const flag = data.balance == 'true' ? true : false
+      const flag2 = data.balance == 'false' ? true : false
+      if (flag) {
+        where.score = {
+          [dataBase.Op.gt]: 0
+        }
+      }
+      if (flag2) {
+        where.score = {
+          [dataBase.Op.eq]: 0
+        }
+      }
+    }
+    
     if (data.startParam) {
       where.startParam = {
         [dataBase.Op.like]: `%${data.startParam}%`

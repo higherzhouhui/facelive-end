@@ -62,6 +62,69 @@ async function getList(req, resp) {
   }
 }
 
+async function getCoinRank(req, resp) {
+  manager_logger().info('View coinRank list')
+  try {
+    const data = req.query
+    let where = {
+      type: 'chat_video'
+    }
+   
+    const countAll = await Model.Event.findAndCountAll({
+      where,
+      attributes: [
+        'id',
+        'to_user',
+        "to_username",
+        [dataBase.sequelize.fn('SUM', dataBase.sequelize.col('score')), 'total'],
+        [dataBase.sequelize.literal('RANK() OVER (ORDER BY SUM(score) ASC)'), 'sort'],
+      ],
+      group: ['to_user'],
+      order: [[dataBase.sequelize.col('total'), 'ASC']]  // 降序排序
+    })
+ 
+  
+    return successResp(resp, countAll, 'success')
+  } catch (error) {
+    manager_logger().info('Failed to view member list', error)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+
+async function getRechargeRank(req, resp) {
+  manager_logger().info('View recharge list')
+  try {
+    let where = {
+      type: {
+        [dataBase.Op.in]: ['recharge_ton', 'recharge_star']
+      }
+    }
+   
+    const countAll = await Model.Event.findAll({
+      where,
+      attributes: [
+        'id',
+        'from_user',
+        "from_username",
+        [dataBase.sequelize.fn('SUM', dataBase.sequelize.col('price')), 'total'],
+        [dataBase.sequelize.literal('RANK() OVER (ORDER BY SUM(price) DESC)'), 'sort'],
+      ],
+      group: ['from_user'],
+      order: [[dataBase.sequelize.col('total'), 'DESC']]  // 降序排序
+    })
+ 
+  
+    return successResp(resp, countAll, 'success')
+  } catch (error) {
+    manager_logger().info('Failed to view member list', error)
+    console.error(`${error}`)
+    return errorResp(resp, 400, `${error}`)
+  }
+}
+
+
 async function updateInfo(req, resp) {
   manager_logger().info('Update member information')
   try {
@@ -109,4 +172,6 @@ module.exports = {
   getList,
   updateInfo,
   removeRecord,
+  getCoinRank,
+  getRechargeRank,
 }

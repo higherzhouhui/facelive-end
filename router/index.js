@@ -111,6 +111,9 @@ router.post('/dogAdmin/order/update', manageOrder.updateInfo)
 router.post('/dogAdmin/order/remove', manageOrder.removeRecord)
 
 router.get('/dogAdmin/consumption/list', manageConsumption.getList)
+router.get('/dogAdmin/consumption/getCoinRank', manageConsumption.getCoinRank)
+router.get('/dogAdmin/consumption/rechargeRank', manageConsumption.getRechargeRank)
+
 router.post('/dogAdmin/consumption/update', manageConsumption.updateInfo)
 router.post('/dogAdmin/consumption/remove', manageConsumption.removeRecord)
 
